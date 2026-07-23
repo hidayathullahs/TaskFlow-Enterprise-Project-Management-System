@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  taskflow-db:
+    image: mysql:8.0
+    container_name: taskflow-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: taskflow_db
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
+
+  taskflow-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: taskflow-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:mysql://taskflow-db:3306/taskflow_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      SPRING_PROFILES_ACTIVE: prod
+    depends_on:
+      taskflow-db:
+        condition: service_healthy
+
+  taskflow-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: taskflow-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - taskflow-backend
+
+volumes:
+  mysql_data:

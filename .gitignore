@@ -1,0 +1,35 @@
+# Operating System & IDE Files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build Artifacts & Dependencies
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+target/
+backend/target/
+build/
+backend/build/
+
+# Logs & Temporary Files
+*.log
+logs/
+*.tmp
+*.temp
+backend/*.json
+!backend/api-docs.json
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+
+# Database & Uploads
+uploads/
+backend/uploads/
+*.db
