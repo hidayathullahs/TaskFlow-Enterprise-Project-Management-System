@@ -4,8 +4,54 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-200;
+    @apply bg-slate-950 text-slate-100 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200 antialiased selection:bg-brand-500 selection:text-white;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
+}
+
+/* Glassmorphism & High-End Visual Effects */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-light {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.glow-brand {
+  box-shadow: 0 0 40px -10px rgba(59, 130, 246, 0.4);
+}
+
+.glow-purple {
+  box-shadow: 0 0 40px -10px rgba(168, 85, 247, 0.4);
+}
+
+.glow-emerald {
+  box-shadow: 0 0 40px -10px rgba(16, 185, 129, 0.4);
+}
+
+/* Gradient mesh background */
+.bg-mesh-cosmic {
+  background-color: #0b0f19;
+  background-image: 
+    radial-gradient(at 10% 15%, rgba(59, 130, 246, 0.18) 0px, transparent 50%),
+    radial-gradient(at 90% 10%, rgba(139, 92, 246, 0.22) 0px, transparent 50%),
+    radial-gradient(at 50% 85%, rgba(16, 185, 129, 0.12) 0px, transparent 50%),
+    radial-gradient(at 80% 80%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
+}
+
+.bg-mesh-light {
+  background-color: #f8fafc;
+  background-image: 
+    radial-gradient(at 10% 15%, rgba(219, 234, 254, 0.8) 0px, transparent 50%),
+    radial-gradient(at 90% 10%, rgba(237, 233, 254, 0.7) 0px, transparent 50%),
+    radial-gradient(at 50% 85%, rgba(209, 250, 229, 0.5) 0px, transparent 50%);
 }
 
 /* Custom Scrollbars */
@@ -23,3 +69,4 @@
 .dark ::-webkit-scrollbar-thumb {
   background: #334155;
 }
+

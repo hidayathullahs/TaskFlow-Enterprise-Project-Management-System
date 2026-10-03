@@ -98,33 +98,37 @@ export const KanbanBoardPage = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in text-slate-100">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
-            Interactive Agile Kanban Board
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-300 text-xs font-bold">
+            <span className="w-2 h-2 rounded-full bg-brand-400 animate-ping" />
+            Active Sprint #26 Board
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            Agile Kanban Velocity Board
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Real-time status transitions, column limits, and task card velocity metrics.
+          <p className="text-xs text-slate-400">
+            Drag, track, and transition enterprise task cards across high-velocity sprint stages.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="w-48">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="w-52">
             <select
               value={selectedProject}
               onChange={(e) => setSelectedProject(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 py-2 px-3 text-xs text-slate-900 dark:text-slate-100"
+              className="w-full rounded-xl border border-slate-700 bg-slate-950 py-2 px-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
-              <option value="">All Projects</option>
+              <option value="">All Active Portfolios</option>
               {projects.map((p) => (
                 <option key={p.publicId} value={p.publicId}>[{p.code}] {p.name}</option>
               ))}
             </select>
           </div>
-          <Button size="sm" onClick={() => setIsModalOpen(true)}>
-            <Plus className="w-4 h-4 mr-1" /> Create Task
+          <Button size="sm" onClick={() => setIsModalOpen(true)} className="bg-gradient-to-r from-brand-600 to-indigo-600 text-white font-bold shadow-md shadow-brand-500/25">
+            <Plus className="w-4 h-4 mr-1.5" /> + New Task
           </Button>
         </div>
       </div>
@@ -134,16 +138,16 @@ export const KanbanBoardPage = () => {
         {KANBAN_COLUMNS.map((col) => {
           const tasks = boardData[col.id] || [];
           return (
-            <div key={col.id} className="flex flex-col rounded-2xl bg-slate-100/70 dark:bg-slate-800/40 p-4 border border-slate-200/60 dark:border-slate-700/60 min-h-[500px]">
+            <div key={col.id} className="flex flex-col rounded-3xl bg-slate-900/70 p-4 border border-slate-800 min-h-[550px] shadow-lg">
               {/* Column Header */}
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200 dark:border-slate-700">
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800">
                 <div className="flex items-center gap-2">
-                  <div className={`h-3 w-3 rounded-full ${col.color}`} />
-                  <h3 className="text-xs font-extrabold uppercase text-slate-800 dark:text-slate-200 tracking-wider">
+                  <div className={`h-3 w-3 rounded-full ${col.color} shadow-sm`} />
+                  <h3 className="text-xs font-black uppercase text-white tracking-wider">
                     {col.label}
                   </h3>
                 </div>
-                <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+                <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300">
                   {tasks.length}
                 </span>
               </div>
@@ -151,41 +155,48 @@ export const KanbanBoardPage = () => {
               {/* Task Cards Stack */}
               <div className="space-y-3 flex-1">
                 {tasks.length === 0 ? (
-                  <div className="text-center py-8 text-[11px] text-slate-400 border border-dashed border-slate-200 dark:border-slate-700 rounded-xl">
+                  <div className="text-center py-12 text-xs text-slate-500 border border-dashed border-slate-800 rounded-2xl bg-slate-950/40">
                     No tasks in {col.label}
                   </div>
                 ) : (
                   tasks.map((task) => (
-                    <Card key={task.publicId} className="p-3.5 hover:shadow-md transition-all space-y-3 cursor-pointer">
+                    <div 
+                      key={task.publicId} 
+                      className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800/90 hover:border-slate-700 transition-all space-y-3 cursor-pointer shadow-md hover:scale-[1.02] group"
+                    >
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold text-brand-600">[{task.taskNumber}]</span>
-                        <Badge variant={task.priority === 'HIGH' || task.priority === 'URGENT' ? 'red' : 'blue'}>
+                        <span className="text-[10px] font-bold text-brand-400 font-mono">[{task.taskNumber}]</span>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                          task.priority === 'HIGH' || task.priority === 'URGENT'
+                            ? 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+                            : 'bg-brand-500/10 text-brand-300 border-brand-500/30'
+                        }`}>
                           {task.priority}
-                        </Badge>
+                        </span>
                       </div>
 
-                      <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 line-clamp-2">
+                      <h4 className="text-xs font-bold text-white group-hover:text-brand-300 line-clamp-2 transition-colors">
                         {task.title}
                       </h4>
 
-                      <div className="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-slate-100 dark:border-slate-700/50">
-                        <span className="flex items-center gap-1">
-                          <User className="w-3 h-3" /> {task.assigneeName || 'Unassigned'}
+                      <div className="flex items-center justify-between text-[11px] text-slate-400 pt-2.5 border-t border-slate-800/80">
+                        <span className="flex items-center gap-1.5 text-xs text-slate-300 font-medium">
+                          <User className="w-3.5 h-3.5 text-slate-500" /> {task.assigneeName || 'Unassigned'}
                         </span>
 
                         {/* Move Dropdown Action */}
                         <select
                           value={task.status}
                           onChange={(e) => handleMoveTask(task.publicId, e.target.value)}
-                          className="text-[10px] rounded border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-1 py-0.5 text-slate-700 dark:text-slate-300"
+                          className="text-[10px] rounded-lg border border-slate-700 bg-slate-900 px-2 py-1 text-slate-300 focus:outline-none focus:ring-1 focus:ring-brand-500"
                         >
                           <option value="TODO">To Do</option>
                           <option value="IN_PROGRESS">In Progress</option>
-                          <option value="CODE_REVIEW">Code Review</option>
+                          <option value="CODE_REVIEW">Review</option>
                           <option value="COMPLETED">Completed</option>
                         </select>
                       </div>
-                    </Card>
+                    </div>
                   ))
                 )}
               </div>

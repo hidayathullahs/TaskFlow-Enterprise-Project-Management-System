@@ -55,7 +55,7 @@ public class DataInitializer implements CommandLineRunner {
                         .emailVerified(true)
                         .roles(roles)
                         .build());
-        admin.setPasswordHash(passwordEncoder.encode("Password@123"));
+        admin.setPasswordHash(passwordEncoder.encode("TaskFlow#2026!Secure"));
         admin.setStatus(UserStatus.ACTIVE);
         admin.setRoles(roles);
         userRepository.save(admin);

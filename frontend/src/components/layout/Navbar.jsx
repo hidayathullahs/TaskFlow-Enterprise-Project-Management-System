@@ -25,48 +25,73 @@ export const Navbar = ({ onToggleSidebar }) => {
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 px-6 backdrop-blur-md transition-colors">
+    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-slate-800 bg-slate-900/90 px-6 backdrop-blur-xl text-slate-100 transition-colors">
       {/* Left: Mobile Toggle & Global Search */}
       <div className="flex items-center gap-4">
         <button
           onClick={onToggleSidebar}
-          className="lg:hidden text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+          className="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
         >
           <Search className="w-5 h-5" />
         </button>
 
-        <div className="relative hidden md:block w-72">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+        {/* Workspace Title Pill */}
+        <div className="hidden xl:flex items-center gap-2 text-xs font-bold text-slate-400">
+          <span className="px-2.5 py-1 rounded-lg bg-slate-800/80 border border-slate-700/60 text-slate-300">
+            🏢 Production Workspace
+          </span>
+          <span className="text-slate-600">/</span>
+          <span className="text-brand-400 font-extrabold flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+            Live Sync
+          </span>
+        </div>
+
+        <div className="relative hidden md:block w-80">
+          <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-400" />
           <input
             type="text"
-            placeholder="Search projects, tasks, employees..."
-            className="w-full rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100/70 dark:bg-slate-800/70 py-1.5 pl-9 pr-4 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500"
+            placeholder="Search projects, tasks, sprints..."
+            className="w-full rounded-xl border border-slate-800 bg-slate-950/70 py-1.5 pl-10 pr-12 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition-all"
           />
+          <kbd className="absolute right-3 top-2 px-1.5 py-0.5 rounded-md bg-slate-800 border border-slate-700 text-[10px] font-mono text-slate-400">
+            ⌘K
+          </kbd>
         </div>
       </div>
 
-      {/* Right: Theme Toggle, Notifications, Profile Dropdown */}
+      {/* Right: Quick Action, Notifications, Profile Dropdown */}
       <div className="flex items-center gap-3">
+        {/* Quick Task Action Button */}
+        <a
+          href="/tasks/kanban"
+          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 text-white text-xs font-bold shadow-md shadow-brand-500/20 hover:scale-102 transition-all"
+        >
+          <span>+ New Task</span>
+        </a>
+
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
-          className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors"
+          className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
           title="Toggle Theme"
         >
-          {theme === 'dark' ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5" />}
+          {theme === 'dark' ? <Sun className="w-4.5 h-4.5 text-amber-400" /> : <Moon className="w-4.5 h-4.5 text-slate-300" />}
         </button>
 
         {/* Notification Bell */}
         <a
           href="/notifications"
-          className="relative p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors"
+          className="relative p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
           title="Notifications"
         >
-          <Bell className="w-5 h-5" />
-          {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white">
+          <Bell className="w-4.5 h-4.5" />
+          {unreadCount > 0 ? (
+            <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white shadow-xs">
               {unreadCount}
             </span>
+          ) : (
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
           )}
         </a>
 
@@ -74,48 +99,60 @@ export const Navbar = ({ onToggleSidebar }) => {
         <div className="relative">
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="flex items-center gap-3 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="flex items-center gap-3 p-1 rounded-2xl hover:bg-slate-800/80 transition-colors border border-transparent hover:border-slate-700/60"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-600 font-bold text-white shadow-sm text-sm">
-              {user?.firstName?.[0] || 'U'}
+            <div className="relative">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 font-bold text-white shadow-md text-sm border border-white/20">
+                {user?.firstName?.[0] || 'A'}
+              </div>
+              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-slate-900" />
             </div>
             <div className="hidden text-left md:block">
-              <p className="text-xs font-semibold text-slate-800 dark:text-slate-100">
-                {user?.firstName} {user?.lastName}
+              <p className="text-xs font-bold text-white">
+                {user?.firstName || 'Super'} {user?.lastName || 'Admin'}
               </p>
-              <p className="text-[10px] text-slate-400">{user?.designation || 'Employee'}</p>
+              <p className="text-[10px] text-brand-400 font-semibold tracking-wide">
+                {user?.roles?.[0]?.replace('ROLE_', '') || 'SUPER_ADMIN'}
+              </p>
             </div>
           </button>
 
           {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-56 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-1 shadow-xl z-50">
-              <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-700">
-                <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+            <div className="absolute right-0 mt-2 w-60 rounded-2xl border border-slate-800 bg-slate-900/95 backdrop-blur-xl py-1.5 shadow-2xl z-50 animate-fade-in text-slate-100">
+              <div className="px-4 py-3 border-b border-slate-800">
+                <p className="text-sm font-black text-white">
                   {user?.firstName} {user?.lastName}
                 </p>
-                <p className="text-xs text-slate-400 truncate">{user?.email}</p>
+                <p className="text-xs text-slate-400 truncate mt-0.5">{user?.email}</p>
+                <div className="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 text-[10px] font-bold border border-brand-500/30">
+                  <Shield className="w-3 h-3 text-brand-400" /> Enterprise Role
+                </div>
               </div>
 
-              <a
-                href="/profile"
-                className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50"
-              >
-                <User className="w-4 h-4" /> My Profile
-              </a>
-              <a
-                href="/settings"
-                className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50"
-              >
-                <Settings className="w-4 h-4" /> Account Settings
-              </a>
+              <div className="p-1 space-y-0.5">
+                <a
+                  href="/profile"
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+                >
+                  <User className="w-4 h-4 text-brand-400" /> Profile & Credentials
+                </a>
+                <a
+                  href="/settings"
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+                >
+                  <Settings className="w-4 h-4 text-purple-400" /> Organization Settings
+                </a>
+              </div>
 
-              <div className="border-t border-slate-100 dark:border-slate-700 my-1" />
-              <button
-                onClick={logout}
-                className="flex w-full items-center gap-2 px-4 py-2 text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30"
-              >
-                <LogOut className="w-4 h-4" /> Sign Out
-              </button>
+              <div className="border-t border-slate-800 my-1" />
+              <div className="p-1">
+                <button
+                  onClick={logout}
+                  className="flex w-full items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors"
+                >
+                  <LogOut className="w-4 h-4" /> Sign Out from Workspace
+                </button>
+              </div>
             </div>
           )}
         </div>

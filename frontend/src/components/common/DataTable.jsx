@@ -25,7 +25,7 @@ export const DataTable = ({ columns, data, isLoading = false, emptyMessage = "No
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100 dark:divide-slate-700/60">
-          {data.length === 0 ? (
+          {!data || data.length === 0 ? (
             <tr>
               <td colSpan={columns.length} className="px-6 py-8 text-center text-slate-400">
                 {emptyMessage}

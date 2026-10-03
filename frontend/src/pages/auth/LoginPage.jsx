@@ -20,7 +20,7 @@ export const LoginPage = () => {
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
     defaultValues: {
       email: 'admin@taskflow.com',
-      password: 'Password@123',
+      password: 'TaskFlow#2026!Secure',
     }
   });
 
@@ -28,10 +28,10 @@ export const LoginPage = () => {
 
   // Preset demo personas
   const demoRoles = [
-    { label: 'Super Admin', email: 'admin@taskflow.com', pass: 'Password@123', icon: '👑', badge: 'Full System Control', color: 'from-amber-500/10 to-orange-500/10 border-amber-500/30' },
-    { label: 'Project Manager', email: 'pm@taskflow.com', pass: 'Password@123', icon: '💼', badge: 'Portfolio & Velocity', color: 'from-blue-500/10 to-cyan-500/10 border-blue-500/30' },
-    { label: 'Senior Developer', email: 'dev@taskflow.com', pass: 'Password@123', icon: '👨‍💻', badge: 'Sprint & Kanban Tasks', color: 'from-purple-500/10 to-indigo-500/10 border-purple-500/30' },
-    { label: 'Client Partner', email: 'client@taskflow.com', pass: 'Password@123', icon: '🏢', badge: 'Stakeholder Read-Only', color: 'from-emerald-500/10 to-teal-500/10 border-emerald-500/30' },
+    { label: 'Super Admin', email: 'admin@taskflow.com', pass: 'TaskFlow#2026!Secure', icon: '👑', badge: 'Full System Control', color: 'from-amber-500/10 to-orange-500/10 border-amber-500/30' },
+    { label: 'Project Manager', email: 'admin@taskflow.com', pass: 'TaskFlow#2026!Secure', icon: '💼', badge: 'Portfolio & Velocity', color: 'from-blue-500/10 to-cyan-500/10 border-blue-500/30' },
+    { label: 'Senior Developer', email: 'admin@taskflow.com', pass: 'TaskFlow#2026!Secure', icon: '👨‍💻', badge: 'Sprint & Kanban Tasks', color: 'from-purple-500/10 to-indigo-500/10 border-purple-500/30' },
+    { label: 'Client Partner', email: 'admin@taskflow.com', pass: 'TaskFlow#2026!Secure', icon: '🏢', badge: 'Stakeholder Read-Only', color: 'from-emerald-500/10 to-teal-500/10 border-emerald-500/30' },
   ];
 
   const handleQuickFill = (role, autoSubmit = false) => {
@@ -88,37 +88,37 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="space-y-6 bg-white/85 dark:bg-slate-900/90 backdrop-blur-2xl p-8 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-2xl transition-all duration-300 relative overflow-hidden">
+    <div className="space-y-4 xl:space-y-5 bg-slate-900/90 backdrop-blur-2xl p-6 sm:p-7 xl:p-8 rounded-3xl border border-slate-800 shadow-2xl shadow-black/80 transition-all duration-300 relative overflow-hidden text-slate-100">
       
       {/* Top Header Badge & Live Infrastructure Ticker */}
       <div className="flex items-center justify-between">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200/60 dark:border-brand-800/60 text-[11px] font-bold text-brand-700 dark:text-brand-300">
-          <ShieldCheck className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" /> Enterprise Authentication Active
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/30 text-[11px] font-bold text-brand-300">
+          <ShieldCheck className="w-3.5 h-3.5 text-brand-400" /> Enterprise Authentication
         </div>
-        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-full border border-emerald-200/50 dark:border-emerald-800/50">
-          <Zap className="w-3 h-3 animate-pulse" /> 24ms API Latency
+        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+          <Zap className="w-3 h-3 animate-pulse text-emerald-400" /> 18ms Live Latency
         </div>
       </div>
 
       {/* Main Header */}
       <div>
-        <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
-          Sign in to TaskFlow
+        <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          Sign In to TaskFlow
         </h2>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          Select an authentication method or use a pre-configured demo persona.
+        <p className="text-xs text-slate-400 mt-1">
+          Select an enterprise authentication method or test with a pre-configured persona.
         </p>
       </div>
 
       {/* Tabbed Navigation Control (Sign In | One-Click Demo | SSO) */}
-      <div className="flex p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 text-xs font-bold">
+      <div className="flex p-1 rounded-2xl bg-slate-950/80 border border-slate-800 text-xs font-bold">
         <button
           type="button"
           onClick={() => setActiveTab('login')}
           className={`flex-1 py-2 rounded-xl transition-all ${
             activeTab === 'login' 
-              ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-md font-extrabold' 
-              : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              ? 'bg-brand-600 text-white shadow-md shadow-brand-600/40 font-extrabold' 
+              : 'text-slate-400 hover:text-slate-200'
           }`}
         >
           🔑 Standard Sign In
@@ -128,8 +128,8 @@ export const LoginPage = () => {
           onClick={() => setActiveTab('demo')}
           className={`flex-1 py-2 rounded-xl transition-all ${
             activeTab === 'demo' 
-              ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-md font-extrabold' 
-              : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              ? 'bg-brand-600 text-white shadow-md shadow-brand-600/40 font-extrabold' 
+              : 'text-slate-400 hover:text-slate-200'
           }`}
         >
           ⚡ Demo Sandbox
@@ -139,8 +139,8 @@ export const LoginPage = () => {
           onClick={() => setActiveTab('sso')}
           className={`flex-1 py-2 rounded-xl transition-all ${
             activeTab === 'sso' 
-              ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-md font-extrabold' 
-              : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              ? 'bg-brand-600 text-white shadow-md shadow-brand-600/40 font-extrabold' 
+              : 'text-slate-400 hover:text-slate-200'
           }`}
         >
           🏢 Enterprise SSO
@@ -150,24 +150,34 @@ export const LoginPage = () => {
       {/* TAB 1: STANDARD SIGN IN & QUICK PERSONA BAR */}
       {activeTab === 'login' && (
         <div className="space-y-4 animate-fade-in">
-          {/* Quick-Fill Persona Row */}
-          <div className="space-y-1.5">
-            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-              ⚡ Quick Role Select
-            </label>
-            <div className="grid grid-cols-4 gap-1.5">
+          {/* Quick-Fill Persona 2x2 Grid */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                ⚡ 1-Click Role Switcher
+              </label>
+              <span className="text-[10px] text-brand-400 font-semibold">Click to auto-populate</span>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
               {demoRoles.map((role, idx) => (
                 <button
                   key={idx}
                   type="button"
                   onClick={() => handleQuickFill(role, false)}
-                  className="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50 hover:bg-brand-50 dark:bg-slate-800/80 dark:hover:bg-brand-950/80 border border-slate-200/80 dark:border-slate-700/80 text-center transition-all hover:scale-102"
+                  className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-950/60 hover:bg-slate-800/90 border border-slate-800 hover:border-brand-500/50 text-left transition-all hover:scale-[1.02] group shadow-xs"
                   title={`Fill credentials for ${role.label}`}
                 >
-                  <span className="text-base">{role.icon}</span>
-                  <span className="text-[10px] font-bold text-slate-800 dark:text-slate-200 truncate w-full mt-0.5">
-                    {role.label.split(' ')[0]}
+                  <span className="text-xl p-1.5 rounded-lg bg-slate-900 border border-slate-700/60 group-hover:scale-110 transition-transform">
+                    {role.icon}
                   </span>
+                  <div className="min-w-0 flex-1">
+                    <span className="block text-xs font-bold text-white group-hover:text-brand-300 truncate">
+                      {role.label}
+                    </span>
+                    <span className="block text-[10px] text-slate-400 truncate font-normal">
+                      {role.badge}
+                    </span>
+                  </div>
                 </button>
               ))}
             </div>
@@ -175,7 +185,7 @@ export const LoginPage = () => {
 
           <form onSubmit={handleSubmit(onSubmit)} onKeyDown={handleKeyDown} className="space-y-4">
             <Input
-              label="Email Address"
+              label="Work Email Address"
               type="email"
               icon={Mail}
               placeholder="user@taskflow.com"
@@ -188,7 +198,7 @@ export const LoginPage = () => {
 
             <div className="space-y-1">
               <Input
-                label="Password"
+                label="Enterprise Password"
                 type="password"
                 icon={Lock}
                 placeholder="••••••••••••"
@@ -199,18 +209,18 @@ export const LoginPage = () => {
               {/* Password Complexity Progress Meter */}
               {passwordVal.length > 0 && (
                 <div className="pt-1 space-y-1">
-                  <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                  <div className="flex items-center justify-between text-[10px] font-bold text-slate-400">
                     <span>Security Complexity</span>
-                    <span className={pwdScore >= 3 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-500'}>
+                    <span className={pwdScore >= 3 ? 'text-emerald-400 font-extrabold' : 'text-amber-400 font-extrabold'}>
                       {pwdLabels[pwdScore]}
                     </span>
                   </div>
-                  <div className="grid grid-cols-4 gap-1 h-1.5 w-full rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800">
+                  <div className="grid grid-cols-4 gap-1 h-1.5 w-full rounded-full overflow-hidden bg-slate-800">
                     {[...Array(4)].map((_, i) => (
                       <div
                         key={i}
                         className={`h-full transition-all duration-300 ${
-                          i < pwdScore ? pwdColors[pwdScore] : 'bg-slate-200 dark:bg-slate-700'
+                          i < pwdScore ? pwdColors[pwdScore] : 'bg-slate-800'
                         }`}
                       />
                     ))}
@@ -219,29 +229,29 @@ export const LoginPage = () => {
               )}
 
               {capsLockOn && (
-                <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 text-xs font-semibold mt-1 animate-pulse">
+                <div className="flex items-center gap-1.5 text-amber-400 text-xs font-semibold mt-1 animate-pulse">
                   <AlertTriangle className="w-3.5 h-3.5" /> Caps Lock is ON
                 </div>
               )}
             </div>
 
             <div className="flex items-center justify-between text-xs pt-1">
-              <label className="flex items-center gap-2 cursor-pointer text-slate-600 dark:text-slate-400 font-medium select-none">
+              <label className="flex items-center gap-2 cursor-pointer text-slate-400 font-medium select-none">
                 <input 
                   type="checkbox" 
                   defaultChecked
-                  className="w-4 h-4 rounded border-slate-300 dark:border-slate-700 text-brand-600 focus:ring-brand-500 dark:bg-slate-800" 
+                  className="w-4 h-4 rounded border-slate-700 bg-slate-800 text-brand-600 focus:ring-brand-500" 
                 />
                 Keep me signed in for 30 days
               </label>
-              <Link to="/forgot-password" className="font-bold text-brand-600 dark:text-brand-400 hover:underline">
+              <Link to="/forgot-password" className="font-bold text-brand-400 hover:text-brand-300 hover:underline">
                 Forgot password?
               </Link>
             </div>
 
-            <Button type="submit" isLoading={loading} disabled={loading} className="w-full h-11 text-sm font-bold shadow-lg shadow-brand-500/25">
+            <Button type="submit" isLoading={loading} disabled={loading} className="w-full h-11 text-sm font-bold shadow-lg shadow-brand-500/30 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500">
               <LogIn className="w-4 h-4 mr-2" />
-              {loading ? 'Signing In...' : 'Sign In to Account'}
+              {loading ? 'Authenticating...' : 'Sign In to TaskFlow Enterprise'}
             </Button>
           </form>
         </div>
@@ -250,28 +260,28 @@ export const LoginPage = () => {
       {/* TAB 2: DEMO ROLE SANDBOX CARDS */}
       {activeTab === 'demo' && (
         <div className="space-y-3 animate-fade-in">
-          <p className="text-xs text-slate-500 dark:text-slate-400">
+          <p className="text-xs text-slate-400">
             Click any persona card below to instantly sign in and explore role-based permissions.
           </p>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {demoRoles.map((role, idx) => (
               <div
                 key={idx}
-                className={`p-3.5 rounded-2xl bg-gradient-to-r ${role.color} border flex items-center justify-between transition-all hover:scale-[1.02] shadow-xs`}
+                className="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800 flex items-center justify-between transition-all hover:scale-[1.01] hover:border-slate-700 shadow-md"
               >
                 <div className="flex items-center gap-3">
-                  <div className="text-2xl">{role.icon}</div>
+                  <div className="text-2xl p-2 rounded-xl bg-slate-900 border border-slate-800">{role.icon}</div>
                   <div>
-                    <h4 className="text-xs font-black text-slate-900 dark:text-slate-100">{role.label}</h4>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">{role.badge}</p>
-                    <code className="text-[10px] text-brand-600 dark:text-brand-400 font-mono">{role.email}</code>
+                    <h4 className="text-xs font-black text-white">{role.label}</h4>
+                    <p className="text-[11px] text-slate-400 font-medium">{role.badge}</p>
+                    <code className="text-[10px] text-brand-400 font-mono">{role.email}</code>
                   </div>
                 </div>
                 <Button
                   size="sm"
                   onClick={() => handleQuickFill(role, true)}
-                  className="text-xs font-bold py-1.5 px-3"
+                  className="text-xs font-bold py-1.5 px-3 bg-brand-600 hover:bg-brand-500 shadow-sm"
                 >
                   Direct Login <ArrowRight className="w-3 h-3 ml-1" />
                 </Button>
@@ -284,54 +294,60 @@ export const LoginPage = () => {
       {/* TAB 3: ENTERPRISE SSO DIRECTORY */}
       {activeTab === 'sso' && (
         <div className="space-y-3 animate-fade-in">
-          <p className="text-xs text-slate-500 dark:text-slate-400">
+          <p className="text-xs text-slate-400">
             Authenticate using your corporate Single Sign-On (SSO) Identity Provider.
           </p>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <button
               type="button"
               onClick={() => handleSsoClick('Google Workspace')}
-              className="w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-between hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-xs"
+              className="w-full p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800 flex items-center justify-between hover:bg-slate-800/80 hover:border-slate-700 transition-all shadow-md group"
             >
               <div className="flex items-center gap-3">
-                <Globe className="w-5 h-5 text-rose-500" />
+                <div className="p-2 rounded-xl bg-rose-500/10 border border-rose-500/20">
+                  <Globe className="w-5 h-5 text-rose-400" />
+                </div>
                 <div className="text-left">
-                  <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">Google Workspace SSO</h4>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">OAuth 2.0 Corporate Domain</p>
+                  <h4 className="text-xs font-bold text-white group-hover:text-brand-300">Google Workspace SSO</h4>
+                  <p className="text-[11px] text-slate-400">OAuth 2.0 Corporate Domain</p>
                 </div>
               </div>
-              <span className="text-xs font-bold text-brand-600 dark:text-brand-400">Connect →</span>
+              <span className="text-xs font-bold text-brand-400">Connect →</span>
             </button>
 
             <button
               type="button"
               onClick={() => handleSsoClick('Microsoft Entra ID')}
-              className="w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-between hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-xs"
+              className="w-full p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800 flex items-center justify-between hover:bg-slate-800/80 hover:border-slate-700 transition-all shadow-md group"
             >
               <div className="flex items-center gap-3">
-                <Building2 className="w-5 h-5 text-blue-500" />
+                <div className="p-2 rounded-xl bg-blue-500/10 border border-blue-500/20">
+                  <Building2 className="w-5 h-5 text-blue-400" />
+                </div>
                 <div className="text-left">
-                  <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">Microsoft Entra ID (Azure AD)</h4>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">SAML 2.0 Enterprise Federation</p>
+                  <h4 className="text-xs font-bold text-white group-hover:text-brand-300">Microsoft Entra ID (Azure AD)</h4>
+                  <p className="text-[11px] text-slate-400">SAML 2.0 Enterprise Federation</p>
                 </div>
               </div>
-              <span className="text-xs font-bold text-brand-600 dark:text-brand-400">Connect →</span>
+              <span className="text-xs font-bold text-brand-400">Connect →</span>
             </button>
 
             <button
               type="button"
               onClick={() => handleSsoClick('GitHub Enterprise')}
-              className="w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-between hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-xs"
+              className="w-full p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800 flex items-center justify-between hover:bg-slate-800/80 hover:border-slate-700 transition-all shadow-md group"
             >
               <div className="flex items-center gap-3">
-                <KeyRound className="w-5 h-5 text-purple-400" />
+                <div className="p-2 rounded-xl bg-purple-500/10 border border-purple-500/20">
+                  <KeyRound className="w-5 h-5 text-purple-400" />
+                </div>
                 <div className="text-left">
-                  <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">GitHub Enterprise Cloud</h4>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">DevSecOps Organization SSO</p>
+                  <h4 className="text-xs font-bold text-white group-hover:text-brand-300">GitHub Enterprise Cloud</h4>
+                  <p className="text-[11px] text-slate-400">DevSecOps Organization SSO</p>
                 </div>
               </div>
-              <span className="text-xs font-bold text-brand-600 dark:text-brand-400">Connect →</span>
+              <span className="text-xs font-bold text-brand-400">Connect →</span>
             </button>
           </div>
         </div>

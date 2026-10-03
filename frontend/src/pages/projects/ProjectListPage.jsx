@@ -84,42 +84,46 @@ export const ProjectListPage = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
-            Enterprise Project Portfolio
+    <div className="space-y-6 animate-fade-in text-slate-100">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-300 text-xs font-bold">
+            <span className="w-2 h-2 rounded-full bg-brand-400 animate-ping" />
+            Enterprise Portfolio Engine
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            Active Enterprise Projects
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Track active initiatives, delivery milestones, team capacities, and budget allocations.
+          <p className="text-xs text-slate-400">
+            Track multi-tenant software initiatives, delivery milestones, team capacities, and budget allocations.
           </p>
         </div>
-        <Button size="sm" onClick={() => setIsModalOpen(true)}>
-          <Plus className="w-4 h-4 mr-2" /> Initialize Project
+        <Button size="sm" onClick={() => setIsModalOpen(true)} className="bg-gradient-to-r from-brand-600 to-indigo-600 text-white font-bold shadow-lg shadow-brand-500/25">
+          <Plus className="w-4 h-4 mr-2" /> + Initialize Project
         </Button>
       </div>
 
       {/* Filter Bar */}
-      <Card className="p-4">
+      <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-md">
         <form onSubmit={handleSearchSubmit} className="flex flex-col md:flex-row items-center gap-3">
           <div className="relative flex-1 w-full">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-400" />
             <input
               type="text"
-              placeholder="Search by project name or project code..."
+              placeholder="Search by project name, public code, or milestone..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 py-2 pl-9 pr-4 text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-brand-500"
+              className="w-full rounded-xl border border-slate-700 bg-slate-950 py-2 pl-10 pr-4 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500"
             />
           </div>
 
-          <div className="w-full md:w-48">
+          <div className="w-full md:w-52">
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 py-2 px-3 text-xs text-slate-900 dark:text-slate-100"
+              className="w-full rounded-xl border border-slate-700 bg-slate-950 py-2 px-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
-              <option value="">All Statuses</option>
+              <option value="">All Status Portfolios</option>
               <option value="PLANNING">Planning</option>
               <option value="IN_PROGRESS">In Progress</option>
               <option value="COMPLETED">Completed</option>
@@ -127,58 +131,69 @@ export const ProjectListPage = () => {
             </select>
           </div>
 
-          <Button type="submit" size="sm">Search Portfolio</Button>
+          <Button type="submit" size="sm" className="bg-brand-600 hover:bg-brand-500 text-white font-bold">
+            Search Portfolio
+          </Button>
         </form>
-      </Card>
+      </div>
 
       {/* Project Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((proj) => (
-          <Card key={proj.publicId} className="hover:shadow-lg transition-all space-y-4">
+          <div key={proj.publicId} className="p-5 rounded-3xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 transition-all space-y-4 shadow-xl hover:scale-[1.02] group relative overflow-hidden">
             <div className="flex items-start justify-between">
               <div>
-                <span className="text-[10px] font-extrabold uppercase text-brand-600 tracking-wider">
+                <span className="text-[10px] font-black uppercase text-brand-400 font-mono tracking-wider">
                   [{proj.code}]
                 </span>
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 line-clamp-1">
+                <h3 className="text-base font-black text-white group-hover:text-brand-300 transition-colors line-clamp-1">
                   {proj.name}
                 </h3>
               </div>
-              <Badge variant={proj.status === 'COMPLETED' ? 'green' : proj.status === 'IN_PROGRESS' ? 'blue' : 'amber'}>
+              <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
+                proj.status === 'COMPLETED' 
+                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' 
+                  : proj.status === 'IN_PROGRESS' 
+                  ? 'bg-brand-500/10 text-brand-300 border-brand-500/30' 
+                  : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+              }`}>
                 {proj.status}
-              </Badge>
+              </span>
             </div>
 
-            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
-              {proj.description || 'Enterprise software modernization project.'}
+            <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+              {proj.description || 'Enterprise software modernization initiative with high-frequency sprint cycles.'}
             </p>
 
             {/* Progress Bar */}
-            <div>
-              <div className="flex justify-between text-xs font-semibold mb-1">
-                <span className="text-slate-500">Progress</span>
-                <span className="text-brand-600">{proj.progressPercentage}%</span>
+            <div className="space-y-1.5">
+              <div className="flex justify-between text-xs font-semibold">
+                <span className="text-slate-400">Milestone Progress</span>
+                <span className="text-brand-400 font-extrabold">{proj.progressPercentage}%</span>
               </div>
-              <div className="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
-                <div className="bg-brand-600 h-2 rounded-full transition-all duration-300" style={{ width: `${proj.progressPercentage}%` }} />
+              <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div 
+                  className="bg-gradient-to-r from-brand-600 to-indigo-500 h-2 rounded-full transition-all duration-500" 
+                  style={{ width: `${proj.progressPercentage}%` }} 
+                />
               </div>
             </div>
 
             {/* Project Footer Meta */}
-            <div className="flex items-center justify-between text-xs pt-3 border-t border-slate-100 dark:border-slate-700/60 text-slate-400">
-              <span className="flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5" /> {proj.deadline || 'No deadline'}
+            <div className="flex items-center justify-between text-xs pt-3 border-t border-slate-800 text-slate-400">
+              <span className="flex items-center gap-1.5 text-xs text-slate-300 font-medium">
+                <Calendar className="w-3.5 h-3.5 text-slate-500" /> {proj.deadline || 'Q4 2026 Target'}
               </span>
               <div className="flex items-center gap-2">
-                <Link to={`/projects/${proj.publicId}`} className="p-1 text-brand-600 hover:underline flex items-center gap-1 font-bold">
+                <Link to={`/projects/${proj.publicId}`} className="p-1 text-brand-400 hover:text-brand-300 flex items-center gap-1 font-bold">
                   <Eye className="w-4 h-4" /> View Details
                 </Link>
-                <button onClick={() => handleDelete(proj.publicId)} className="p-1 text-slate-400 hover:text-rose-600">
+                <button onClick={() => handleDelete(proj.publicId)} className="p-1 text-slate-500 hover:text-rose-400 transition-colors" title="Delete Project">
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             </div>
-          </Card>
+          </div>
         ))}
       </div>
 
