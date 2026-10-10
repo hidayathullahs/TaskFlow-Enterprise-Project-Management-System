@@ -1,100 +1,132 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { APP_NAME } from '../../constants';
-import { ShieldCheck, Sparkles, TrendingUp, Cpu, Activity, Zap } from 'lucide-react';
-import heroImg from '../../assets/auth_hero_illustration.jpg';
+import { Check, Users, Target, BarChart3, Sparkles } from 'lucide-react';
+import cosmicBg from '../../assets/login_cosmic_earth_bg.jpg';
 
 export const AuthLayout = () => {
   return (
-    <div className="flex min-h-screen w-full flex-col lg:flex-row bg-[#080c14] text-slate-100 transition-colors duration-300">
-      {/* Left Hero Section (Deep Cosmic Midnight) */}
+    <div className="relative min-h-screen w-full overflow-x-hidden bg-[#030712] text-slate-100 flex flex-col justify-between selection:bg-cyan-500 selection:text-white">
+      
+      {/* ============================================================= */}
+      {/* 1. BACKGROUND: PHOTOREALISTIC COSMIC EARTH & DATA NETWORK     */}
+      {/* ============================================================= */}
       <div 
-        className="hidden lg:flex lg:w-1/2 flex-col justify-between p-10 xl:p-12 relative overflow-hidden border-r border-slate-800/80"
-        style={{ backgroundColor: '#0b0f19' }}
-      >
-        {/* Animated Mesh Gradient background elements */}
-        <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-blue-600/25 blur-3xl animate-pulse pointer-events-none" />
-        <div className="absolute -left-24 -bottom-24 h-96 w-96 rounded-full bg-purple-600/20 blur-3xl animate-pulse pointer-events-none" />
-        <div className="absolute left-1/3 top-1/2 -translate-y-1/2 h-80 w-80 rounded-full bg-emerald-500/15 blur-3xl pointer-events-none" />
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none scale-105"
+        style={{ backgroundImage: `url(${cosmicBg})` }}
+      />
+      
+      {/* Atmospheric dark gradient overlays for enhanced contrast & neon glow */}
+      <div className="fixed inset-0 z-0 bg-gradient-to-r from-[#030712]/95 via-[#030712]/60 to-[#030712]/80 pointer-events-none" />
+      <div className="fixed inset-0 z-0 bg-radial-[ellipse_at_70%_50%] from-cyan-500/15 via-transparent to-transparent pointer-events-none" />
 
-        {/* Top Header Logo */}
-        <div className="flex items-center justify-between z-10">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-brand-600 via-indigo-600 to-purple-600 font-black text-white text-xl shadow-lg shadow-brand-500/40 border border-white/20">
-              TF
-            </div>
-            <div>
-              <span className="text-xl font-black tracking-tight text-white flex items-center gap-1.5">
-                {APP_NAME} <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">Enterprise</span>
-              </span>
-              <p className="text-[10px] text-slate-400 font-medium tracking-wide">Multi-Tenant Cloud Platform</p>
-            </div>
+      {/* ============================================================= */}
+      {/* 2. TOP HEADER: LOGO BRANDING (MATCHING SCREENSHOT)            */}
+      {/* ============================================================= */}
+      <header className="relative z-10 w-full px-6 sm:px-12 lg:px-16 pt-8 pb-4">
+        <div className="flex items-center gap-3">
+          {/* Blue rounded square with white checkmark */}
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-600/40">
+            <Check className="w-6 h-6 stroke-[3]" />
           </div>
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-slate-700/80 text-xs font-semibold text-brand-300 shadow-md backdrop-blur-md">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" /> v2.5 Enterprise SaaS
-          </span>
-        </div>
-
-        {/* Hero Narrative Header */}
-        <div className="space-y-3 z-10 mt-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            Zero-Downtime Infrastructure Active
+          <div>
+            <span className="text-xl font-extrabold tracking-tight text-white block leading-tight">
+              TaskFlow
+            </span>
+            <span className="text-[9px] font-bold tracking-[0.22em] uppercase text-sky-400 block mt-0.5">
+              PROJECT MANAGEMENT PLATFORM
+            </span>
           </div>
-          <h1 className="text-3xl xl:text-4xl font-black leading-tight tracking-tight text-white drop-shadow-sm">
-            Next-Generation Project Intelligence & Workflows
-          </h1>
-          <p className="text-xs xl:text-sm text-slate-300 leading-relaxed max-w-lg font-normal">
-            Streamline enterprise portfolios, high-velocity Kanban task execution, automated burndown analytics, and multi-tenant security across your entire organization.
-          </p>
         </div>
+      </header>
 
-        {/* 3D Generated Hero Illustration Container */}
-        <div className="relative my-4 z-10 rounded-2xl overflow-hidden border border-white/20 shadow-2xl shadow-brand-500/30 group bg-slate-950/80">
-          <img 
-            src={heroImg} 
-            alt="TaskFlow Enterprise 3D Holographic Project Showcase" 
-            className="w-full h-auto object-cover transform group-hover:scale-102 transition-transform duration-700"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent pointer-events-none" />
+      {/* ============================================================= */}
+      {/* 3. MAIN CONTENT: 2-COLUMN SPLIT (HERO BRANDING + AUTH CARD)  */}
+      {/* ============================================================= */}
+      <main className="relative z-10 flex-1 flex items-center w-full max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-16 py-6 lg:py-10">
+        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
           
-          {/* Floating Badges Overlay */}
-          <div className="absolute bottom-3.5 left-3.5 right-3.5 flex items-center justify-between pointer-events-none">
-            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900/95 backdrop-blur-md border border-white/25 text-xs font-bold text-white shadow-xl">
-              <TrendingUp className="w-3.5 h-3.5 text-emerald-400" /> Velocity +34.8%
+          {/* LEFT COLUMN: HERO HEADLINE & 4 FEATURE PILLS */}
+          <div className="lg:col-span-6 xl:col-span-7 space-y-8 lg:pr-6">
+            
+            {/* Main Headline matching screenshot */}
+            <div className="space-y-4">
+              <h1 className="text-4xl sm:text-5xl xl:text-6xl 2xl:text-7xl font-extrabold tracking-tight text-white leading-[1.1]">
+                Same goals. <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00A3FF] to-[#00E5FF]">
+                  Smarter
+                </span> <br />
+                collaboration.
+              </h1>
+              
+              <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-lg font-normal pt-1">
+                Join thousands of teams who plan, track, and deliver projects with clarity — all in one workspace.
+              </p>
             </div>
-            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900/95 backdrop-blur-md border border-white/25 text-xs font-bold text-white shadow-xl">
-              <Zap className="w-3.5 h-3.5 text-cyan-400" /> 18ms Latency
+
+            {/* 4 Circular Feature Badges matching screenshot */}
+            <div className="flex items-center gap-5 sm:gap-7 pt-4 flex-wrap sm:flex-nowrap">
+              
+              {/* Badge 1: Work Together */}
+              <div className="flex flex-col items-center text-center gap-2.5 group">
+                <div className="w-13 h-13 rounded-full bg-[#0a152e]/80 border border-cyan-500/35 flex items-center justify-center text-cyan-400 shadow-[0_0_20px_rgba(0,180,255,0.25)] group-hover:scale-105 group-hover:border-cyan-400 transition-all">
+                  <Users className="w-5 h-5 stroke-[2]" />
+                </div>
+                <span className="text-xs font-medium text-slate-300 leading-tight">
+                  Work<br />Together
+                </span>
+              </div>
+
+              {/* Badge 2: Stay Organized */}
+              <div className="flex flex-col items-center text-center gap-2.5 group">
+                <div className="w-13 h-13 rounded-full bg-[#0a152e]/80 border border-cyan-500/35 flex items-center justify-center text-cyan-400 shadow-[0_0_20px_rgba(0,180,255,0.25)] group-hover:scale-105 group-hover:border-cyan-400 transition-all">
+                  <Target className="w-5 h-5 stroke-[2]" />
+                </div>
+                <span className="text-xs font-medium text-slate-300 leading-tight">
+                  Stay<br />Organized
+                </span>
+              </div>
+
+              {/* Badge 3: Track Progress */}
+              <div className="flex flex-col items-center text-center gap-2.5 group">
+                <div className="w-13 h-13 rounded-full bg-[#0a152e]/80 border border-cyan-500/35 flex items-center justify-center text-cyan-400 shadow-[0_0_20px_rgba(0,180,255,0.25)] group-hover:scale-105 group-hover:border-cyan-400 transition-all">
+                  <BarChart3 className="w-5 h-5 stroke-[2]" />
+                </div>
+                <span className="text-xs font-medium text-slate-300 leading-tight">
+                  Track<br />Progress
+                </span>
+              </div>
+
+              {/* Badge 4: Achieve More */}
+              <div className="flex flex-col items-center text-center gap-2.5 group">
+                <div className="w-13 h-13 rounded-full bg-[#0a152e]/80 border border-cyan-500/35 flex items-center justify-center text-cyan-400 shadow-[0_0_20px_rgba(0,180,255,0.25)] group-hover:scale-105 group-hover:border-cyan-400 transition-all">
+                  <Sparkles className="w-5 h-5 stroke-[2]" />
+                </div>
+                <span className="text-xs font-medium text-slate-300 leading-tight">
+                  Achieve<br />More
+                </span>
+              </div>
+
             </div>
-            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900/95 backdrop-blur-md border border-white/25 text-xs font-bold text-white shadow-xl">
-              <Cpu className="w-3.5 h-3.5 text-purple-400" /> AI Confidence 98%
+
+          </div>
+
+          {/* RIGHT COLUMN: OUTLET FOR LOGIN / AUTH CARDS */}
+          <div className="lg:col-span-6 xl:col-span-5 flex justify-center lg:justify-end">
+            <div className="w-full max-w-md">
+              <Outlet />
             </div>
           </div>
-        </div>
 
-        {/* Footer Info */}
-        <div className="flex items-center justify-between text-xs text-slate-400 z-10 pt-3 border-t border-slate-800/80">
-          <span>© {new Date().getFullYear()} TaskFlow Inc. All rights reserved.</span>
-          <span className="flex items-center gap-1.5 text-slate-300 font-medium">
-            <ShieldCheck className="w-4 h-4 text-brand-400" /> SOC2 Type II & ISO 27001 Certified
-          </span>
         </div>
-      </div>
+      </main>
 
-      {/* Right Form Container */}
-      <div 
-        className="flex flex-1 items-center justify-center p-6 sm:p-12 relative overflow-y-auto"
-        style={{ backgroundColor: '#090d16' }}
-      >
-        <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full bg-brand-600/15 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-indigo-600/15 blur-3xl pointer-events-none" />
-        <div className="w-full max-w-md relative z-10">
-          <Outlet />
-        </div>
-      </div>
+      {/* ============================================================= */}
+      {/* 4. SUBTLE FOOTER                                              */}
+      {/* ============================================================= */}
+      <footer className="relative z-10 w-full px-6 sm:px-12 lg:px-16 py-4 text-xs text-slate-500 text-center lg:text-left">
+        <span>© {new Date().getFullYear()} TaskFlow Enterprise. All rights reserved.</span>
+      </footer>
+
     </div>
   );
 };
-
-
-
