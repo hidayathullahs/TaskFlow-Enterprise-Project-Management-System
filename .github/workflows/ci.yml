@@ -1,0 +1,72 @@
+name: TaskFlow Enterprise CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend-build-test:
+    name: Backend CI (Java 21 & Spring Boot)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build and Test Backend with Maven
+        run: |
+          cd backend
+          mvn clean test -Dspring.profiles.active=test
+
+      - name: Package Backend Application
+        run: |
+          cd backend
+          mvn package -DskipTests
+
+      - name: Upload Backend Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: taskflow-backend-jar
+          path: backend/target/*.jar
+          retention-days: 7
+
+  frontend-build-test:
+    name: Frontend CI (Node 20 & Vite)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Frontend Dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Build Vite Production Bundle
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Upload Frontend Production Dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: taskflow-frontend-dist
+          path: frontend/dist
+          retention-days: 7
