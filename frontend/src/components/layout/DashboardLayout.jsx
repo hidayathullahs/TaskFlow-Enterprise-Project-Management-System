@@ -40,7 +40,7 @@ export const DashboardLayout = () => {
           onOpenCreateProject={() => setCreateProjectOpen(true)}
           onOpenCreateTask={() => setCreateTaskOpen(true)}
         />
-        <main className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto">
+        <main className="p-4 sm:p-6 md:p-8 max-w-[1680px] mx-auto">
           <Outlet />
         </main>
       </div>

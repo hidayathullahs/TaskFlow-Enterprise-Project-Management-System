@@ -1,874 +1,934 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { 
-  FolderKanban, 
+  FileText, 
   CheckSquare, 
+  Calendar, 
+  GitFork, 
+  Plus, 
+  MoreHorizontal, 
+  Check, 
   Clock, 
-  AlertCircle, 
-  CheckCircle2, 
-  Calendar,
-  ArrowUpRight,
-  Plus,
-  Search,
-  Filter,
-  Users,
-  Building2,
-  TrendingUp,
-  Activity,
-  Layers,
-  Sparkles,
-  ArrowRight,
-  RefreshCw,
-  FolderPlus,
-  DollarSign
+  Compass, 
+  Users, 
+  AlertTriangle, 
+  LayoutGrid, 
+  List, 
+  FolderKanban, 
+  Paperclip,
+  ChevronDown
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { dashboardService } from '../../services/dashboardService';
 import { projectService } from '../../services/projectService';
 import { taskService } from '../../services/taskService';
-import { Skeleton } from '../../components/common/Skeleton';
-import { CreateProjectModal } from '../../components/dashboard/CreateProjectModal';
+import { dashboardService } from '../../services/dashboardService';
 import { CreateTaskModal } from '../../components/dashboard/CreateTaskModal';
-import { GlobalSearchModal } from '../../components/dashboard/GlobalSearchModal';
+import { CreateProjectModal } from '../../components/dashboard/CreateProjectModal';
 import { toast } from 'react-hot-toast';
 
 export const DashboardPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Data States
-  const [stats, setStats] = useState(null);
-  const [projects, setProjects] = useState([]);
-  const [tasks, setTasks] = useState([]);
-  const [activities, setActivities] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // Filter States
-  const [projectFilter, setProjectFilter] = useState('ALL'); // ALL | IN_PROGRESS | PLANNING | COMPLETED
-  const [projectSearch, setProjectSearch] = useState('');
-  const [taskFilter, setTaskFilter] = useState('ALL'); // ALL | IN_PROGRESS | TODO | COMPLETED
-  const [taskSearch, setTaskSearch] = useState('');
-
-  // Modal States
-  const [createProjectOpen, setCreateProjectOpen] = useState(false);
+  // View state: 'board' | 'list' | 'timeline' | 'files'
+  const [activeView, setActiveView] = useState('board');
   const [createTaskOpen, setCreateTaskOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
+  const [createProjectOpen, setCreateProjectOpen] = useState(false);
+  const [selectedColumnForNewTask, setSelectedColumnForNewTask] = useState('UPCOMING');
 
-  // Fetch all live data from backend APIs
-  const loadDashboardData = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const [statsRes, projectsRes, tasksRes, actRes] = await Promise.all([
-        dashboardService.getStats().catch(() => ({ data: null })),
-        projectService.getAll().catch(() => ({ data: { content: [] } })),
-        taskService.getAll().catch(() => ({ data: { content: [] } })),
-        dashboardService.getActivities().catch(() => ({ data: [] })),
-      ]);
+  // Backend data
+  const [projects, setProjects] = useState([]);
+  const [backendTasks, setBackendTasks] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-      setStats(statsRes?.data || null);
-      
-      const projsList = projectsRes?.data?.content || projectsRes?.data || [];
-      setProjects(Array.isArray(projsList) ? projsList : []);
+  // Default tasks matching user's exact screenshot reference
+  const initialScreenshotTasks = [
+    // Column: Upcoming
+    {
+      id: 'task-1',
+      title: 'Design landing page',
+      column: 'UPCOMING',
+      tags: [
+        { label: 'Design', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200/70' },
+        { label: 'High', bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200/70' }
+      ],
+      assignees: [
+        { type: 'image', src: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80' }
+      ],
+      dueDate: 'Oct 12'
+    },
+    {
+      id: 'task-2',
+      title: 'Plan marketing campaign',
+      column: 'UPCOMING',
+      tags: [
+        { label: 'Marketing', bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200/70' },
+        { label: 'Medium', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200/70' }
+      ],
+      assignees: [
+        { type: 'avatar', label: 'HS', bg: 'bg-blue-900' },
+        { type: 'avatar', label: 'FT', bg: 'bg-purple-600' }
+      ],
+      dueDate: 'Oct 14'
+    },
+    {
+      id: 'task-3',
+      title: 'Set up analytics',
+      column: 'UPCOMING',
+      tags: [
+        { label: 'DevOps', bg: 'bg-cyan-50', text: 'text-cyan-700', border: 'border-cyan-200/70' },
+        { label: 'Low', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200/70' }
+      ],
+      assignees: [
+        { type: 'avatar', label: 'VK', bg: 'bg-indigo-600' }
+      ],
+      dueDate: 'Oct 15'
+    },
 
-      const tasksList = tasksRes?.data?.content || tasksRes?.data || [];
-      setTasks(Array.isArray(tasksList) ? tasksList : []);
+    // Column: In progress
+    {
+      id: 'task-4',
+      title: 'Build authentication',
+      column: 'IN_PROGRESS',
+      tags: [
+        { label: 'Development', bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200/70' },
+        { label: 'High', bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200/70' }
+      ],
+      assignees: [
+        { type: 'avatar', label: 'HS', bg: 'bg-blue-900' },
+        { type: 'avatar', label: 'AR', bg: 'bg-violet-600' }
+      ],
+      dueDate: 'Oct 10'
+    },
+    {
+      id: 'task-5',
+      title: 'Integrate payment system',
+      column: 'IN_PROGRESS',
+      tags: [
+        { label: 'Development', bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200/70' },
+        { label: 'Medium', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200/70' }
+      ],
+      assignees: [
+        { type: 'avatar', label: 'VK', bg: 'bg-indigo-600' }
+      ],
+      dueDate: 'Oct 13'
+    },
+    {
+      id: 'task-6',
+      title: 'Create user onboarding',
+      column: 'IN_PROGRESS',
+      tags: [
+        { label: 'Design', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200/70' },
+        { label: 'Medium', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200/70' }
+      ],
+      assignees: [
+        { type: 'avatar', label: 'AR', bg: 'bg-violet-600' },
+        { type: 'avatar', label: 'FT', bg: 'bg-purple-600' }
+      ],
+      dueDate: 'Oct 16'
+    },
 
-      setActivities(Array.isArray(actRes?.data) ? actRes.data : []);
-    } catch (err) {
-      console.error('Failed to load dashboard data:', err);
-      setError('Unable to load enterprise dashboard metrics. Please check your network connection.');
-    } finally {
-      setLoading(false);
+    // Column: In review
+    {
+      id: 'task-7',
+      title: 'UI/UX improvements',
+      column: 'IN_REVIEW',
+      tags: [
+        { label: 'Design', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200/70' },
+        { label: 'Medium', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200/70' }
+      ],
+      assignees: [
+        { type: 'avatar', label: 'FT', bg: 'bg-purple-600' }
+      ],
+      dueDate: 'Oct 11'
+    },
+    {
+      id: 'task-8',
+      title: 'API documentation',
+      column: 'IN_REVIEW',
+      tags: [
+        { label: 'Documentation', bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200/70' },
+        { label: 'Low', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200/70' }
+      ],
+      assignees: [
+        { type: 'avatar', label: 'HS', bg: 'bg-blue-900' }
+      ],
+      dueDate: 'Oct 12'
+    },
+
+    // Column: Completed
+    {
+      id: 'task-9',
+      title: 'Project setup',
+      column: 'COMPLETED',
+      tags: [
+        { label: 'Setup', bg: 'bg-slate-100', text: 'text-slate-700', border: 'border-slate-200/70' }
+      ],
+      assignees: [
+        { type: 'avatar', label: 'HS', bg: 'bg-blue-900' }
+      ],
+      dueDate: 'Oct 5',
+      completed: true
+    },
+    {
+      id: 'task-10',
+      title: 'Database schema',
+      column: 'COMPLETED',
+      tags: [
+        { label: 'Development', bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200/70' }
+      ],
+      assignees: [
+        { type: 'avatar', label: 'VK', bg: 'bg-indigo-600' }
+      ],
+      dueDate: 'Oct 6',
+      completed: true
+    },
+    {
+      id: 'task-11',
+      title: 'Initial wireframes',
+      column: 'COMPLETED',
+      tags: [
+        { label: 'Design', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200/70' }
+      ],
+      assignees: [
+        { type: 'avatar', label: 'AR', bg: 'bg-violet-600' }
+      ],
+      dueDate: 'Oct 7',
+      completed: true
     }
-  };
+  ];
 
+  const [boardTasks, setBoardTasks] = useState(initialScreenshotTasks);
+
+  // Load backend data if available to keep sync
   useEffect(() => {
-    loadDashboardData();
+    const fetchData = async () => {
+      try {
+        const [projRes, taskRes] = await Promise.all([
+          projectService.getAll().catch(() => ({ data: [] })),
+          taskService.getAll().catch(() => ({ data: [] }))
+        ]);
+        const pList = projRes?.data?.content || projRes?.data || [];
+        if (Array.isArray(pList)) setProjects(pList);
+        const tList = taskRes?.data?.content || taskRes?.data || [];
+        if (Array.isArray(tList)) setBackendTasks(tList);
+      } catch (err) {
+        // silent fallback
+      }
+    };
+    fetchData();
   }, []);
 
-  // Filtered Projects
-  const filteredProjects = useMemo(() => {
-    return projects.filter((p) => {
-      const matchesFilter = projectFilter === 'ALL' || p.status === projectFilter;
-      const matchesSearch = 
-        !projectSearch ||
-        p.name?.toLowerCase().includes(projectSearch.toLowerCase()) ||
-        p.code?.toLowerCase().includes(projectSearch.toLowerCase());
-      return matchesFilter && matchesSearch;
-    });
-  }, [projects, projectFilter, projectSearch]);
-
-  // Filtered Tasks
-  const filteredTasks = useMemo(() => {
-    return tasks.filter((t) => {
-      let matchesFilter = true;
-      if (taskFilter === 'IN_PROGRESS') matchesFilter = t.status === 'IN_PROGRESS';
-      else if (taskFilter === 'TODO') matchesFilter = t.status === 'TODO';
-      else if (taskFilter === 'COMPLETED') matchesFilter = t.status === 'COMPLETED';
-
-      const matchesSearch = 
-        !taskSearch ||
-        t.title?.toLowerCase().includes(taskSearch.toLowerCase()) ||
-        t.taskNumber?.toLowerCase().includes(taskSearch.toLowerCase());
-
-      return matchesFilter && matchesSearch;
-    });
-  }, [tasks, taskFilter, taskSearch]);
-
-  // Tasks due soon (within 7 days)
-  const tasksDueSoonCount = useMemo(() => {
-    const today = new Date();
-    const nextWeek = new Date();
-    nextWeek.setDate(today.getDate() + 7);
-
-    return tasks.filter((t) => {
-      if (!t.dueDate || t.status === 'COMPLETED') return false;
-      const d = new Date(t.dueDate);
-      return d >= today && d <= nextWeek;
-    }).length;
-  }, [tasks]);
-
-  // Toggle Task Status (Optimistic Update + API Call)
-  const handleToggleTaskStatus = async (task) => {
-    const isCompleted = task.status === 'COMPLETED';
-    const newStatus = isCompleted ? 'IN_PROGRESS' : 'COMPLETED';
-
-    // Optimistic local update
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.publicId === task.publicId ? { ...t, status: newStatus } : t
-      )
-    );
-
-    try {
-      await taskService.moveStatus(task.publicId, newStatus);
-      toast.success(
-        newStatus === 'COMPLETED'
-          ? `Marked "${task.title}" as completed`
-          : `Re-opened "${task.title}" to In Progress`
-      );
-      // Soft refresh stats in background
-      dashboardService.getStats().then((res) => res?.data && setStats(res.data));
-    } catch (err) {
-      // Revert if failed
-      setTasks((prev) =>
-        prev.map((t) =>
-          t.publicId === task.publicId ? { ...t, status: task.status } : t
-        )
-      );
-      toast.error('Failed to update task status');
-    }
+  const handleOpenAddTask = (col) => {
+    setSelectedColumnForNewTask(col);
+    setCreateTaskOpen(true);
   };
 
-  // Helper formatting for status pills
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case 'IN_PROGRESS':
-        return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800">
-            In Progress
-          </span>
-        );
-      case 'PLANNING':
-        return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-            Planning
-          </span>
-        );
-      case 'COMPLETED':
-        return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800">
-            Completed
-          </span>
-        );
-      case 'TODO':
-        return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-            To Do
-          </span>
-        );
-      case 'REVIEW':
-        return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800">
-            In Review
-          </span>
-        );
-      default:
-        return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200">
-            {status}
-          </span>
-        );
-    }
+  const handleTaskCreated = (newTask) => {
+    // Add dynamically to board
+    const formattedTask = {
+      id: newTask.publicId || `custom-${Date.now()}`,
+      title: newTask.title,
+      column: newTask.status === 'COMPLETED' ? 'COMPLETED' : (newTask.status === 'IN_PROGRESS' ? 'IN_PROGRESS' : 'UPCOMING'),
+      tags: [
+        { 
+          label: newTask.priority || 'Medium', 
+          bg: newTask.priority === 'HIGH' ? 'bg-rose-50' : 'bg-amber-50', 
+          text: newTask.priority === 'HIGH' ? 'text-rose-700' : 'text-amber-700',
+          border: newTask.priority === 'HIGH' ? 'border-rose-200/70' : 'border-amber-200/70'
+        }
+      ],
+      assignees: [
+        { type: 'avatar', label: user?.firstName?.[0] || 'HS', bg: 'bg-blue-900' }
+      ],
+      dueDate: newTask.dueDate ? new Date(newTask.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Next week',
+      completed: newTask.status === 'COMPLETED'
+    };
+    setBoardTasks((prev) => [formattedTask, ...prev]);
+    toast.success('Task created successfully');
   };
 
-  // Helper formatting for priority pills
-  const getPriorityBadge = (priority) => {
-    switch (priority) {
-      case 'URGENT':
-        return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200/80 dark:border-rose-800">
-            Urgent
-          </span>
-        );
-      case 'HIGH':
-        return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800">
-            High
-          </span>
-        );
-      case 'MEDIUM':
-        return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800">
-            Medium
-          </span>
-        );
-      default:
-        return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200">
-            {priority || 'Low'}
-          </span>
-        );
-    }
-  };
-
-  // Helper date formatter
-  const formatDate = (dateStr) => {
-    if (!dateStr) return 'No date';
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  };
-
-  // Check if date is overdue
-  const isOverdue = (dateStr, status) => {
-    if (!dateStr || status === 'COMPLETED') return false;
-    return new Date(dateStr) < new Date();
-  };
-
-  if (loading) {
-    return (
-      <div className="space-y-6">
-        <Skeleton className="h-28 w-full rounded-xl" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => (
-            <Skeleton key={i} className="h-24 w-full rounded-xl" />
-          ))}
-        </div>
-        <Skeleton className="h-72 w-full rounded-xl" />
-        <Skeleton className="h-72 w-full rounded-xl" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="p-8 text-center bg-white dark:bg-slate-800 rounded-xl border border-rose-200 dark:border-rose-900 space-y-3">
-        <AlertCircle className="w-8 h-8 text-rose-500 mx-auto" />
-        <h3 className="text-base font-bold text-slate-900 dark:text-white">Failed to Load Dashboard</h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">{error}</p>
-        <button
-          onClick={loadDashboardData}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 transition-colors"
-        >
-          <RefreshCw className="w-3.5 h-3.5" />
-          <span>Retry Connection</span>
-        </button>
-      </div>
-    );
-  }
+  const upcomingList = boardTasks.filter((t) => t.column === 'UPCOMING');
+  const inProgressList = boardTasks.filter((t) => t.column === 'IN_PROGRESS');
+  const inReviewList = boardTasks.filter((t) => t.column === 'IN_REVIEW');
+  const completedList = boardTasks.filter((t) => t.column === 'COMPLETED');
 
   return (
-    <div className="space-y-8 animate-fade-in text-slate-800 dark:text-slate-100 font-sans">
+    <div className="space-y-7 animate-fade-in text-slate-800 font-sans pb-10">
       
-      {/* ========================================================================= */}
-      {/* SECTION C: WELCOME & OVERVIEW SECTION */}
-      {/* ========================================================================= */}
-      <section className="bg-white dark:bg-slate-800/90 rounded-xl border border-slate-200/90 dark:border-slate-700/80 p-6 shadow-xs">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-              Good day, {user?.firstName || 'Enterprise Leader'}
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-              Here is what's happening across your projects and deliverables today.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2.5">
-            <button
-              onClick={() => setCreateProjectOpen(true)}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs hover:shadow transition-all"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Create Project</span>
-            </button>
-            <button
-              onClick={() => setCreateTaskOpen(true)}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-600 transition-all shadow-2xs"
-            >
-              <CheckSquare className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              <span>New Task</span>
-            </button>
-            <Link
-              to="/tasks"
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700/60 transition-colors"
-            >
-              <span>View My Tasks</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
+      {/* ------------------------------------------------------------- */}
+      {/* 1. TOP GREETING HEADER                                        */}
+      {/* ------------------------------------------------------------- */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+            <span>Good morning, team</span>
+            <span className="text-xl">👋</span>
+          </h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+            Here's what's moving this week.
+          </p>
         </div>
-
-        {/* Compact KPI Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-100 dark:border-slate-700/60">
-          
-          {/* KPI 1: Active Projects */}
-          <div className="p-3.5 rounded-lg bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Active Projects</span>
-              <span className="w-2 h-2 rounded-full bg-blue-500" />
-            </div>
-            <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-slate-900 dark:text-white">
-                {stats?.activeProjects || 0}
-              </span>
-              <span className="text-xs text-slate-500 dark:text-slate-400">
-                of {stats?.totalProjects || projects.length} total
-              </span>
-            </div>
-          </div>
-
-          {/* KPI 2: Open Tasks */}
-          <div className="p-3.5 rounded-lg bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Open Tasks</span>
-              <span className="w-2 h-2 rounded-full bg-amber-500" />
-            </div>
-            <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-slate-900 dark:text-white">
-                {stats?.pendingTasks || tasks.filter(t => t.status !== 'COMPLETED').length}
-              </span>
-              <span className="text-xs text-slate-500 dark:text-slate-400">
-                {tasks.filter(t => t.status === 'IN_PROGRESS').length} in progress
-              </span>
-            </div>
-          </div>
-
-          {/* KPI 3: Due This Week */}
-          <div className="p-3.5 rounded-lg bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Due This Week</span>
-              <span className="w-2 h-2 rounded-full bg-rose-500" />
-            </div>
-            <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-slate-900 dark:text-white">
-                {tasksDueSoonCount}
-              </span>
-              <span className="text-xs text-rose-600 dark:text-rose-400 font-medium">
-                {stats?.overdueTasks ? `${stats.overdueTasks} overdue` : 'Sprint deliverables'}
-              </span>
-            </div>
-          </div>
-
-          {/* KPI 4: Overall Progress Velocity */}
-          <div className="p-3.5 rounded-lg bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Overall Progress</span>
-              <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400">
-                {stats?.overallCompletionRate ? `${stats.overallCompletionRate}%` : '42.9%'}
-              </span>
-            </div>
-            <div className="mt-3">
-              <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
-                <div 
-                  className="bg-indigo-600 h-2 rounded-full transition-all duration-500" 
-                  style={{ width: `${stats?.overallCompletionRate || 42.9}%` }}
-                />
-              </div>
-              <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 text-right">
-                {stats?.completedTasks || tasks.filter(t => t.status === 'COMPLETED').length} of {stats?.totalTasks || tasks.length} tasks completed
-              </p>
-            </div>
-          </div>
-
+        <div className="text-xs font-medium text-slate-400 dark:text-slate-400">
+          Wed, Oct 8, 2026
         </div>
-      </section>
+      </div>
 
-      {/* ========================================================================= */}
-      {/* SECTION D: MY PROJECTS (VISUAL CENTERPIECE OF DASHBOARD) */}
-      {/* ========================================================================= */}
-      <section className="space-y-4">
-        {/* Section Header with Tabs & Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <span>Active Projects</span>
-              <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                {projects.length}
-              </span>
-            </h2>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2.5">
-            {/* Filter Tabs */}
-            <div className="flex p-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs font-medium border border-slate-200/80 dark:border-slate-700">
-              <button
-                onClick={() => setProjectFilter('ALL')}
-                className={`px-2.5 py-1 rounded-md transition-colors ${
-                  projectFilter === 'ALL'
-                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-semibold shadow-2xs'
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'
-                }`}
-              >
-                All
-              </button>
-              <button
-                onClick={() => setProjectFilter('IN_PROGRESS')}
-                className={`px-2.5 py-1 rounded-md transition-colors ${
-                  projectFilter === 'IN_PROGRESS'
-                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-semibold shadow-2xs'
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'
-                }`}
-              >
-                In Progress
-              </button>
-              <button
-                onClick={() => setProjectFilter('PLANNING')}
-                className={`px-2.5 py-1 rounded-md transition-colors ${
-                  projectFilter === 'PLANNING'
-                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-semibold shadow-2xs'
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'
-                }`}
-              >
-                Planning
-              </button>
-              <button
-                onClick={() => setProjectFilter('COMPLETED')}
-                className={`px-2.5 py-1 rounded-md transition-colors ${
-                  projectFilter === 'COMPLETED'
-                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-semibold shadow-2xs'
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'
-                }`}
-              >
-                Completed
-              </button>
-            </div>
-
-            {/* Project Search Input */}
-            <div className="relative">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
-              <input
-                type="text"
-                value={projectSearch}
-                onChange={(e) => setProjectSearch(e.target.value)}
-                placeholder="Filter projects..."
-                className="pl-8 pr-3 py-1 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
-              />
-            </div>
-
-            <button
-              onClick={() => setCreateProjectOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs transition-colors"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>New</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Project Cards Grid */}
-        {filteredProjects.length === 0 ? (
-          <div className="p-10 text-center bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-200 dark:border-slate-700 space-y-2">
-            <FolderKanban className="w-8 h-8 text-slate-400 mx-auto" />
-            <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200">No Projects Found</h3>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto">
-              {projectSearch ? 'No projects match your filter query.' : 'Get started by creating your first enterprise project.'}
-            </p>
-            {projectSearch ? (
-              <button
-                onClick={() => { setProjectSearch(''); setProjectFilter('ALL'); }}
-                className="mt-2 text-xs font-semibold text-indigo-600 hover:text-indigo-700"
-              >
-                Clear Search Filter
-              </button>
-            ) : (
-              <button
-                onClick={() => setCreateProjectOpen(true)}
-                className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-semibold shadow-xs hover:bg-indigo-700"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Create Project</span>
-              </button>
-            )}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filteredProjects.map((project) => {
-              // Calculate progress %
-              const projectTasks = tasks.filter(t => t.projectPublicId === project.publicId || t.projectCode === project.code);
-              const completedTasksCount = projectTasks.filter(t => t.status === 'COMPLETED').length;
-              const progressPct = projectTasks.length > 0 
-                ? Math.round((completedTasksCount / projectTasks.length) * 100) 
-                : (project.status === 'COMPLETED' ? 100 : 25);
-
-              return (
-                <div
-                  key={project.publicId}
-                  onClick={() => navigate(`/projects/${project.publicId}`)}
-                  className="bg-white dark:bg-slate-800/90 rounded-xl border border-slate-200/90 dark:border-slate-700/80 p-5 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between group space-y-4"
-                >
-                  <div className="space-y-2">
-                    {/* Top Row: Code, Status, Priority */}
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="font-mono text-[11px] font-bold text-slate-400 dark:text-slate-500">
-                        {project.code}
-                      </span>
-                      <div className="flex items-center gap-1.5">
-                        {getStatusBadge(project.status)}
-                        {getPriorityBadge(project.priority)}
-                      </div>
-                    </div>
-
-                    {/* Title & Description */}
-                    <div>
-                      <h3 className="text-sm sm:text-base font-semibold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center justify-between">
-                        <span>{project.name}</span>
-                        <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-                      </h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mt-1 leading-relaxed">
-                        {project.description || 'Enterprise project delivery roadmap.'}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Bottom: Progress Bar & Metadata */}
-                  <div className="space-y-3 pt-3 border-t border-slate-100 dark:border-slate-700/60">
-                    <div>
-                      <div className="flex items-center justify-between text-xs mb-1">
-                        <span className="text-slate-500 font-medium text-[11px]">Sprint Progress</span>
-                        <span className="font-semibold text-slate-700 dark:text-slate-300 text-[11px]">
-                          {progressPct}%
-                        </span>
-                      </div>
-                      <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
-                        <div 
-                          className="bg-indigo-600 h-1.5 rounded-full transition-all duration-300" 
-                          style={{ width: `${progressPct}%` }}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-1">
-                      <div className="flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5 text-slate-400" />
-                        <span className={isOverdue(project.deadline, project.status) ? 'text-rose-600 font-semibold' : ''}>
-                          Due {formatDate(project.deadline)}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-3">
-                        {project.budget > 0 && (
-                          <span className="font-medium text-slate-600 dark:text-slate-300">
-                            ${Number(project.budget).toLocaleString()}
-                          </span>
-                        )}
-                        <span className="text-slate-400">·</span>
-                        <span className="font-medium">
-                          {projectTasks.length} {projectTasks.length === 1 ? 'task' : 'tasks'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </section>
-
-      {/* ========================================================================= */}
-      {/* SECTION E: MY TASKS & UPCOMING WORK (LINEAR / ASANA STYLE) */}
-      {/* ========================================================================= */}
-      <section className="bg-white dark:bg-slate-800/90 rounded-xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs overflow-hidden">
-        {/* Section Header */}
-        <div className="p-4 sm:p-5 border-b border-slate-200/80 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <span>My Tasks & Upcoming Work</span>
-              <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600">
-                {tasks.length}
-              </span>
-            </h2>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2.5">
-            {/* Filter Tabs */}
-            <div className="flex p-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs font-medium border border-slate-200/80 dark:border-slate-700">
-              <button
-                onClick={() => setTaskFilter('ALL')}
-                className={`px-2.5 py-1 rounded-md transition-colors ${
-                  taskFilter === 'ALL'
-                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-semibold shadow-2xs'
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'
-                }`}
-              >
-                All ({tasks.length})
-              </button>
-              <button
-                onClick={() => setTaskFilter('IN_PROGRESS')}
-                className={`px-2.5 py-1 rounded-md transition-colors ${
-                  taskFilter === 'IN_PROGRESS'
-                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-semibold shadow-2xs'
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'
-                }`}
-              >
-                In Progress ({tasks.filter(t => t.status === 'IN_PROGRESS').length})
-              </button>
-              <button
-                onClick={() => setTaskFilter('TODO')}
-                className={`px-2.5 py-1 rounded-md transition-colors ${
-                  taskFilter === 'TODO'
-                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-semibold shadow-2xs'
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'
-                }`}
-              >
-                To Do ({tasks.filter(t => t.status === 'TODO').length})
-              </button>
-              <button
-                onClick={() => setTaskFilter('COMPLETED')}
-                className={`px-2.5 py-1 rounded-md transition-colors ${
-                  taskFilter === 'COMPLETED'
-                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-semibold shadow-2xs'
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'
-                }`}
-              >
-                Completed ({tasks.filter(t => t.status === 'COMPLETED').length})
-              </button>
-            </div>
-
-            {/* Task Search */}
-            <div className="relative">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
-              <input
-                type="text"
-                value={taskSearch}
-                onChange={(e) => setTaskSearch(e.target.value)}
-                placeholder="Filter tasks..."
-                className="pl-8 pr-3 py-1 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
-              />
-            </div>
-
-            <button
-              onClick={() => setCreateTaskOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs transition-colors"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>New Task</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Task Rows List */}
-        {filteredTasks.length === 0 ? (
-          <div className="p-10 text-center space-y-2">
-            <CheckSquare className="w-8 h-8 text-slate-400 mx-auto" />
-            <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200">No Tasks Match Filter</h3>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto">
-              {taskSearch ? 'Try a different search term or clear the filter.' : 'No tasks assigned in this category.'}
-            </p>
-          </div>
-        ) : (
-          <div className="divide-y divide-slate-100 dark:divide-slate-700/60">
-            {filteredTasks.map((task) => {
-              const isDone = task.status === 'COMPLETED';
-              const overdue = isOverdue(task.dueDate, task.status);
-
-              return (
-                <div
-                  key={task.publicId}
-                  className={`flex flex-col sm:flex-row sm:items-center justify-between p-3.5 sm:px-5 hover:bg-slate-50/80 dark:hover:bg-slate-700/40 transition-colors gap-3 ${
-                    isDone ? 'opacity-65' : ''
-                  }`}
-                >
-                  {/* Left: Checkbox, Code & Title */}
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                    {/* Interactive Completion Toggle */}
-                    <button
-                      onClick={() => handleToggleTaskStatus(task)}
-                      className={`h-4.5 w-4.5 rounded border flex items-center justify-center shrink-0 transition-all ${
-                        isDone
-                          ? 'bg-emerald-600 border-emerald-600 text-white'
-                          : 'border-slate-300 dark:border-slate-600 hover:border-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-700'
-                      }`}
-                      title={isDone ? 'Mark as In Progress' : 'Mark as Completed'}
-                    >
-                      {isDone && <CheckCircle2 className="w-3.5 h-3.5" />}
-                    </button>
-
-                    <span className="font-mono text-xs font-semibold text-slate-400 dark:text-slate-500 shrink-0">
-                      {task.taskNumber || 'TASK'}
-                    </span>
-
-                    <div className="min-w-0 flex-1">
-                      <Link
-                        to={`/tasks/${task.publicId}`}
-                        className={`text-xs sm:text-sm font-medium hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors truncate block ${
-                          isDone ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-800 dark:text-slate-200'
-                        }`}
-                      >
-                        {task.title}
-                      </Link>
-                      {task.projectName && (
-                        <div className="flex items-center gap-1.5 text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
-                          <FolderKanban className="w-3 h-3 text-slate-400" />
-                          <span className="truncate">{task.projectName}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Right: Priority, Due Date, Status */}
-                  <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
-                    <div className="flex items-center gap-2">
-                      {getPriorityBadge(task.priority)}
-                      {getStatusBadge(task.status)}
-                    </div>
-
-                    <div className="flex items-center gap-1.5 text-xs min-w-[100px] justify-end">
-                      <Clock className={`w-3.5 h-3.5 ${overdue ? 'text-rose-500' : 'text-slate-400'}`} />
-                      <span className={`text-[11px] font-medium ${overdue ? 'text-rose-600 font-semibold' : 'text-slate-500 dark:text-slate-400'}`}>
-                        {formatDate(task.dueDate)}
-                      </span>
-                    </div>
-
-                    {/* Assignee Avatar */}
-                    <div 
-                      className="h-6 w-6 rounded-full bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-[10px] font-bold text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0"
-                      title={task.assigneeName || 'Unassigned'}
-                    >
-                      {task.assigneeName?.[0] || 'A'}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </section>
-
-      {/* ========================================================================= */}
-      {/* SECTION F: RECENT ACTIVITY & PROJECT HEALTH (SECONDARY) */}
-      {/* ========================================================================= */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* ------------------------------------------------------------- */}
+      {/* 2. KPI / METRIC CARDS ROW                                      */}
+      {/* ------------------------------------------------------------- */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
-        {/* Left: Recent Activity Feed */}
-        <div className="lg:col-span-7 bg-white dark:bg-slate-800/90 rounded-xl border border-slate-200/90 dark:border-slate-700/80 p-5 shadow-xs flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
-              <div className="flex items-center gap-2">
-                <Activity className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white">Recent Team Activity</h3>
-              </div>
-              <span className="text-[11px] font-medium text-slate-400">Live Audit Log</span>
+        {/* Card 1: Active projects */}
+        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/70 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:shadow-xs transition-shadow">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+              <FileText className="w-4 h-4 stroke-[2]" />
             </div>
-
-            <div className="space-y-3 mt-4">
-              {activities.length === 0 ? (
-                <div className="py-8 text-center text-xs text-slate-400">
-                  No activity events recorded yet. All services operational.
-                </div>
-              ) : (
-                activities.slice(0, 5).map((act, idx) => (
-                  <div key={idx} className="flex items-start gap-3 text-xs">
-                    <div className="h-6 w-6 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
-                      {act.performedBy ? String(act.performedBy)[0] : 'S'}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-slate-800 dark:text-slate-200 font-medium">
-                        <span className="font-semibold">{act.action?.replace(/_/g, ' ')}</span>
-                      </p>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                        {act.details || `Audit event on ${act.entityType || 'entity'}`}
-                      </p>
-                    </div>
-                    <span className="text-[10px] text-slate-400 font-mono shrink-0">
-                      {act.createdAt ? new Date(act.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recent'}
-                    </span>
-                  </div>
-                ))
-              )}
-            </div>
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Active projects</span>
           </div>
-
-          <div className="pt-3 mt-4 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-[11px] text-slate-400">
-            <span>Spring Boot 3 REST API & MySQL 8.0</span>
-            <span className="text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Real-Time Telemetry
+          <div className="flex items-baseline gap-2.5">
+            <span className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">08</span>
+            <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800">
+              ↑ 14%
             </span>
           </div>
+          <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">vs last week</div>
         </div>
 
-        {/* Right: Upcoming Deadlines & Sprints */}
-        <div className="lg:col-span-5 bg-white dark:bg-slate-800/90 rounded-xl border border-slate-200/90 dark:border-slate-700/80 p-5 shadow-xs flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white">Upcoming Milestones</h3>
-              </div>
-              <Link to="/tasks/kanban" className="text-[11px] font-semibold text-indigo-600 hover:text-indigo-700">
-                Kanban View →
-              </Link>
+        {/* Card 2: Open tasks */}
+        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/70 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:shadow-xs transition-shadow">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+              <CheckSquare className="w-4 h-4 stroke-[2]" />
+            </div>
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Open tasks</span>
+          </div>
+          <div className="flex items-baseline gap-2.5">
+            <span className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">24</span>
+            <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800">
+              ↓ 8%
+            </span>
+          </div>
+          <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">vs last week</div>
+        </div>
+
+        {/* Card 3: Due this week */}
+        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/70 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:shadow-xs transition-shadow">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+              <Calendar className="w-4 h-4 stroke-[2]" />
+            </div>
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Due this week</span>
+          </div>
+          <div className="flex items-baseline gap-2.5">
+            <span className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">06</span>
+            <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400 border border-rose-100 dark:border-rose-800">
+              ↑ 20%
+            </span>
+          </div>
+          <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">vs last week</div>
+        </div>
+
+        {/* Card 4: Team capacity */}
+        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/70 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:shadow-xs transition-shadow">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+              <GitFork className="w-4 h-4 stroke-[2]" />
+            </div>
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Team capacity</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">82%</span>
+            <div className="flex-1 max-w-[130px] h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+              <div className="bg-emerald-500 h-full rounded-full transition-all duration-500" style={{ width: '82%' }} />
+            </div>
+          </div>
+          <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">Good progress</div>
+        </div>
+
+      </div>
+
+      {/* ------------------------------------------------------------- */}
+      {/* 3. MAIN DASHBOARD SPLIT: KANBAN BOARD + RIGHT SIDEBAR         */}
+      {/* ------------------------------------------------------------- */}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+        
+        {/* LEFT / CENTER: PROJECT BOARD (8 or 9 cols on wide screens) */}
+        <div className="xl:col-span-9 space-y-4">
+          
+          {/* Project Title Bar with View Tabs and Add Task */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-transparent">
+            
+            {/* Project Title */}
+            <div className="flex items-center gap-3">
+              <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+                Product launch
+              </h2>
             </div>
 
-            <div className="space-y-3 mt-4">
-              {projects.slice(0, 4).map((p) => (
-                <div key={p.publicId} className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-700/60">
-                  <div className="min-w-0 pr-2">
-                    <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
-                      {p.name}
-                    </p>
-                    <p className="text-[11px] text-slate-500 font-mono">
-                      Target: {formatDate(p.deadline)}
-                    </p>
+            {/* Middle: View Mode Tabs */}
+            <div className="flex items-center gap-1 bg-slate-100/80 dark:bg-slate-800 p-1 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300">
+              <button
+                onClick={() => setActiveView('board')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                  activeView === 'board'
+                    ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 font-semibold shadow-xs'
+                    : 'hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span>Board</span>
+              </button>
+              
+              <button
+                onClick={() => setActiveView('list')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                  activeView === 'list'
+                    ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 font-semibold shadow-xs'
+                    : 'hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <List className="w-3.5 h-3.5" />
+                <span>List</span>
+              </button>
+
+              <button
+                onClick={() => setActiveView('timeline')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                  activeView === 'timeline'
+                    ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 font-semibold shadow-xs'
+                    : 'hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <Clock className="w-3.5 h-3.5" />
+                <span>Timeline</span>
+              </button>
+
+              <button
+                onClick={() => setActiveView('files')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                  activeView === 'files'
+                    ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 font-semibold shadow-xs'
+                    : 'hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <Paperclip className="w-3.5 h-3.5" />
+                <span>Files</span>
+              </button>
+
+              <button className="px-2 py-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <MoreHorizontal className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Right: + Add task Button */}
+            <button
+              onClick={() => handleOpenAddTask('UPCOMING')}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
+            >
+              <Plus className="w-4 h-4 stroke-[2.5]" />
+              <span>Add task</span>
+            </button>
+          </div>
+
+          {/* 4-Column Kanban Board View */}
+          {activeView === 'board' ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
+              
+              {/* ================= COLUMN 1: UPCOMING ================= */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-slate-700 dark:text-slate-200">Upcoming</span>
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700 text-[11px] font-bold text-slate-500 dark:text-slate-300">
+                      {upcomingList.length}
+                    </span>
                   </div>
-                  {getStatusBadge(p.status)}
+                  <button 
+                    onClick={() => handleOpenAddTask('UPCOMING')}
+                    className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
                 </div>
-              ))}
-            </div>
-          </div>
 
-          <div className="pt-3 mt-4 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-[11px] text-slate-400">
-            <span>SOC2 Type II Compliant Governance</span>
-            <span className="text-indigo-600 font-semibold">Method-Level RBAC</span>
-          </div>
+                <div className="space-y-3">
+                  {upcomingList.map((card) => (
+                    <div
+                      key={card.id}
+                      className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/70 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:border-slate-200 dark:hover:border-slate-600 hover:shadow-xs transition-all space-y-3.5 group cursor-pointer"
+                    >
+                      <h4 className="text-sm font-semibold text-slate-900 dark:text-white leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        {card.title}
+                      </h4>
+                      
+                      <div className="flex flex-wrap gap-1.5">
+                        {card.tags.map((tag, idx) => (
+                          <span
+                            key={idx}
+                            className={`px-2 py-0.5 rounded-md text-[11px] font-medium border ${tag.bg} ${tag.text} ${tag.border}`}
+                          >
+                            {tag.label}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="flex items-center justify-between pt-1 border-t border-slate-50 dark:border-slate-700/50">
+                        {/* Assignee Avatar(s) */}
+                        <div className="flex items-center -space-x-1.5">
+                          {card.assignees.map((a, i) => (
+                            a.type === 'image' ? (
+                              <img
+                                key={i}
+                                src={a.src}
+                                alt="Assignee"
+                                className="w-6 h-6 rounded-full object-cover ring-2 ring-white dark:ring-slate-800"
+                              />
+                            ) : (
+                              <div
+                                key={i}
+                                className={`w-6 h-6 rounded-full ${a.bg} text-white font-bold text-[9px] flex items-center justify-center ring-2 ring-white dark:ring-slate-800`}
+                              >
+                                {a.label}
+                              </div>
+                            )
+                          ))}
+                        </div>
+
+                        {/* Due Date */}
+                        <span className="text-xs font-normal text-slate-400 dark:text-slate-400">
+                          {card.dueDate}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ================= COLUMN 2: IN PROGRESS ================= */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-blue-600 dark:text-blue-400">In progress</span>
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-50 dark:bg-blue-950/60 text-[11px] font-bold text-blue-600 dark:text-blue-400">
+                      {inProgressList.length}
+                    </span>
+                  </div>
+                  <button 
+                    onClick={() => handleOpenAddTask('IN_PROGRESS')}
+                    className="p-1 rounded-lg text-blue-500 hover:text-blue-700 hover:bg-blue-50 transition-colors"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {inProgressList.map((card) => (
+                    <div
+                      key={card.id}
+                      className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/70 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:border-slate-200 dark:hover:border-slate-600 hover:shadow-xs transition-all space-y-3.5 group cursor-pointer"
+                    >
+                      <h4 className="text-sm font-semibold text-slate-900 dark:text-white leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        {card.title}
+                      </h4>
+                      
+                      <div className="flex flex-wrap gap-1.5">
+                        {card.tags.map((tag, idx) => (
+                          <span
+                            key={idx}
+                            className={`px-2 py-0.5 rounded-md text-[11px] font-medium border ${tag.bg} ${tag.text} ${tag.border}`}
+                          >
+                            {tag.label}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="flex items-center justify-between pt-1 border-t border-slate-50 dark:border-slate-700/50">
+                        {/* Assignee Avatar(s) */}
+                        <div className="flex items-center -space-x-1.5">
+                          {card.assignees.map((a, i) => (
+                            <div
+                              key={i}
+                              className={`w-6 h-6 rounded-full ${a.bg} text-white font-bold text-[9px] flex items-center justify-center ring-2 ring-white dark:ring-slate-800`}
+                            >
+                              {a.label}
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Due Date */}
+                        <span className="text-xs font-normal text-slate-400 dark:text-slate-400">
+                          {card.dueDate}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ================= COLUMN 3: IN REVIEW ================= */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-amber-600 dark:text-amber-400">In review</span>
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-50 dark:bg-amber-950/60 text-[11px] font-bold text-amber-600 dark:text-amber-400">
+                      {inReviewList.length}
+                    </span>
+                  </div>
+                  <button 
+                    onClick={() => handleOpenAddTask('IN_REVIEW')}
+                    className="p-1 rounded-lg text-amber-500 hover:text-amber-700 hover:bg-amber-50 transition-colors"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {inReviewList.map((card) => (
+                    <div
+                      key={card.id}
+                      className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/70 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:border-slate-200 dark:hover:border-slate-600 hover:shadow-xs transition-all space-y-3.5 group cursor-pointer"
+                    >
+                      <h4 className="text-sm font-semibold text-slate-900 dark:text-white leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        {card.title}
+                      </h4>
+                      
+                      <div className="flex flex-wrap gap-1.5">
+                        {card.tags.map((tag, idx) => (
+                          <span
+                            key={idx}
+                            className={`px-2 py-0.5 rounded-md text-[11px] font-medium border ${tag.bg} ${tag.text} ${tag.border}`}
+                          >
+                            {tag.label}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="flex items-center justify-between pt-1 border-t border-slate-50 dark:border-slate-700/50">
+                        {/* Assignee Avatar */}
+                        <div className="flex items-center -space-x-1.5">
+                          {card.assignees.map((a, i) => (
+                            <div
+                              key={i}
+                              className={`w-6 h-6 rounded-full ${a.bg} text-white font-bold text-[9px] flex items-center justify-center ring-2 ring-white dark:ring-slate-800`}
+                            >
+                              {a.label}
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Due Date */}
+                        <span className="text-xs font-normal text-slate-400 dark:text-slate-400">
+                          {card.dueDate}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ================= COLUMN 4: COMPLETED ================= */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">Completed</span>
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                      {completedList.length}
+                    </span>
+                  </div>
+                  <button 
+                    onClick={() => handleOpenAddTask('COMPLETED')}
+                    className="p-1 rounded-lg text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 transition-colors"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {completedList.map((card) => (
+                    <div
+                      key={card.id}
+                      className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/70 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:border-slate-200 dark:hover:border-slate-600 hover:shadow-xs transition-all space-y-3.5 group cursor-pointer"
+                    >
+                      <h4 className="text-sm font-semibold text-slate-900 dark:text-white leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        {card.title}
+                      </h4>
+                      
+                      <div className="flex flex-wrap gap-1.5">
+                        {card.tags.map((tag, idx) => (
+                          <span
+                            key={idx}
+                            className={`px-2 py-0.5 rounded-md text-[11px] font-medium border ${tag.bg} ${tag.text} ${tag.border}`}
+                          >
+                            {tag.label}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="flex items-center justify-between pt-1 border-t border-slate-50 dark:border-slate-700/50">
+                        {/* Assignee Avatar */}
+                        <div className="flex items-center -space-x-1.5">
+                          {card.assignees.map((a, i) => (
+                            <div
+                              key={i}
+                              className={`w-6 h-6 rounded-full ${a.bg} text-white font-bold text-[9px] flex items-center justify-center ring-2 ring-white dark:ring-slate-800`}
+                            >
+                              {a.label}
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Completed Checkmark + Date */}
+                        <div className="inline-flex items-center gap-1 text-xs font-normal text-slate-400 dark:text-slate-400">
+                          <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[2.5]" />
+                          <span>{card.dueDate}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+          ) : (
+            /* Alternate List View */
+            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-3">
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3">
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Deliverable</span>
+                <div className="flex items-center gap-12 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  <span>Status</span>
+                  <span>Due Date</span>
+                </div>
+              </div>
+              <div className="divide-y divide-slate-100 dark:divide-slate-700/50">
+                {boardTasks.map((t) => (
+                  <div key={t.id} className="py-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-2 h-2 rounded-full ${t.column === 'COMPLETED' ? 'bg-emerald-500' : t.column === 'IN_PROGRESS' ? 'bg-blue-500' : 'bg-amber-400'}`} />
+                      <span className="text-sm font-semibold text-slate-900 dark:text-white">{t.title}</span>
+                    </div>
+                    <div className="flex items-center gap-12 text-xs">
+                      <span className="text-slate-500">{t.column.replace('_', ' ')}</span>
+                      <span className="text-slate-400">{t.dueDate}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
         </div>
 
-      </section>
+        {/* RIGHT SIDEBAR WIDGETS (3 cols on wide screens) */}
+        <div className="xl:col-span-3 space-y-5">
+          
+          {/* --------------------------------------------------------- */}
+          {/* WIDGET 1: PROJECT HEALTH                                  */}
+          {/* --------------------------------------------------------- */}
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/70 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-4">
+            
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                Project health
+              </h3>
+              <button className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <MoreHorizontal className="w-4 h-4" />
+              </button>
+            </div>
 
-      {/* ========================================================================= */}
-      {/* INTERACTIVE MODALS */}
-      {/* ========================================================================= */}
-      <CreateProjectModal
-        isOpen={createProjectOpen}
-        onClose={() => setCreateProjectOpen(false)}
-        onProjectCreated={() => loadDashboardData()}
-      />
+            {/* Health Progress Bar & Percentage */}
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                <div 
+                  className="bg-emerald-500 h-full rounded-full transition-all duration-500" 
+                  style={{ width: '68%' }} 
+                />
+              </div>
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                68%
+              </span>
+            </div>
 
+            {/* Status Heading & Description */}
+            <div className="space-y-0.5 pt-1">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                <span className="text-sm font-bold text-slate-900 dark:text-white">
+                  On track
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 dark:text-slate-400 pl-4">
+                The project is progressing well.
+              </p>
+            </div>
+
+            {/* Metric Checklist */}
+            <div className="space-y-2.5 pt-2 border-t border-slate-50 dark:border-slate-700/50">
+              
+              {/* Timeline */}
+              <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2.5 text-slate-600 dark:text-slate-300">
+                  <Clock className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Timeline</span>
+                </div>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                  On track
+                </span>
+              </div>
+
+              {/* Budget */}
+              <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2.5 text-slate-600 dark:text-slate-300">
+                  <Compass className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Budget</span>
+                </div>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                  On track
+                </span>
+              </div>
+
+              {/* Team workload */}
+              <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2.5 text-slate-600 dark:text-slate-300">
+                  <Users className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Team workload</span>
+                </div>
+                <span className="font-semibold text-lime-600 dark:text-lime-400">
+                  Balanced
+                </span>
+              </div>
+
+              {/* Risks */}
+              <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2.5 text-slate-600 dark:text-slate-300">
+                  <AlertTriangle className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Risks</span>
+                </div>
+                <span className="font-semibold text-rose-500 dark:text-rose-400">
+                  2 open
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* --------------------------------------------------------- */}
+          {/* WIDGET 2: UPCOMING MILESTONES                             */}
+          {/* --------------------------------------------------------- */}
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/70 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-4">
+            
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                Upcoming milestones
+              </h3>
+              <button 
+                onClick={() => navigate('/projects')}
+                className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                View all
+              </button>
+            </div>
+
+            {/* Vertical Timeline */}
+            <div className="space-y-4 pt-1">
+              
+              {/* Milestone 1: Project kickoff (Completed) */}
+              <div className="flex items-start gap-3 relative">
+                <div className="flex flex-col items-center">
+                  <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                    <Check className="w-3 h-3 stroke-[3]" />
+                  </div>
+                  <div className="w-0.5 h-8 bg-slate-200 dark:bg-slate-700 my-1" />
+                </div>
+                <div className="pt-0.5">
+                  <p className="text-xs font-bold text-slate-900 dark:text-white leading-tight">
+                    Project kickoff
+                  </p>
+                  <p className="text-[11px] text-slate-400 dark:text-slate-400 mt-0.5">
+                    Completed · Oct 1
+                  </p>
+                </div>
+              </div>
+
+              {/* Milestone 2: Beta release (Active / In progress) */}
+              <div className="flex items-start gap-3 relative -mt-2">
+                <div className="flex flex-col items-center">
+                  <div className="w-5 h-5 rounded-full border-2 border-blue-600 bg-white dark:bg-slate-800 flex items-center justify-center shrink-0">
+                    <div className="w-2.5 h-2.5 rounded-full bg-blue-600" />
+                  </div>
+                  <div className="w-0.5 h-8 bg-slate-200 dark:bg-slate-700 my-1" />
+                </div>
+                <div className="pt-0.5">
+                  <p className="text-xs font-bold text-slate-900 dark:text-white leading-tight">
+                    Beta release
+                  </p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                    In 5 days · Oct 13
+                  </p>
+                </div>
+              </div>
+
+              {/* Milestone 3: Public launch (Pending) */}
+              <div className="flex items-start gap-3 relative -mt-2">
+                <div className="flex flex-col items-center">
+                  <div className="w-5 h-5 rounded-full border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 shrink-0" />
+                  <div className="w-0.5 h-8 bg-slate-200 dark:bg-slate-700 my-1" />
+                </div>
+                <div className="pt-0.5">
+                  <p className="text-xs font-bold text-slate-900 dark:text-white leading-tight">
+                    Public launch
+                  </p>
+                  <p className="text-[11px] text-slate-400 dark:text-slate-400 mt-0.5">
+                    Oct 28
+                  </p>
+                </div>
+              </div>
+
+              {/* Milestone 4: Post-launch review (Pending) */}
+              <div className="flex items-start gap-3 relative -mt-2">
+                <div className="flex flex-col items-center">
+                  <div className="w-5 h-5 rounded-full border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 shrink-0" />
+                </div>
+                <div className="pt-0.5">
+                  <p className="text-xs font-bold text-slate-900 dark:text-white leading-tight">
+                    Post-launch review
+                  </p>
+                  <p className="text-[11px] text-slate-400 dark:text-slate-400 mt-0.5">
+                    Nov 5
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* Task Creation Modal */}
       <CreateTaskModal
         isOpen={createTaskOpen}
         onClose={() => setCreateTaskOpen(false)}
         projects={projects}
-        onTaskCreated={() => loadDashboardData()}
+        onTaskCreated={handleTaskCreated}
       />
 
-      <GlobalSearchModal
-        isOpen={searchOpen}
-        onClose={() => setSearchOpen(false)}
-        projects={projects}
-        tasks={tasks}
+      {/* Project Creation Modal */}
+      <CreateProjectModal
+        isOpen={createProjectOpen}
+        onClose={() => setCreateProjectOpen(false)}
+        onProjectCreated={() => {
+          projectService.getAll().then((res) => {
+            const list = res?.data?.content || res?.data || [];
+            if (Array.isArray(list)) setProjects(list);
+          });
+        }}
       />
 
     </div>
