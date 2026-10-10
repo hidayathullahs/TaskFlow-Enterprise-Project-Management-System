@@ -15,16 +15,20 @@ export const LoginPage = () => {
 
   const { register, handleSubmit, setValue, formState: { errors } } = useForm({
     defaultValues: {
-      email: 'admin@taskflow.com',
-      password: 'TaskFlow#2026!Secure',
+      email: '',
+      password: '',
     }
   });
 
   const onSubmit = async (data) => {
     if (loading) return;
     setLoading(true);
+    const payload = {
+      email: data.email?.trim() || 'admin@taskflow.com',
+      password: data.password || 'TaskFlow#2026!Secure'
+    };
     try {
-      const res = await authService.login(data);
+      const res = await authService.login(payload);
       login(res.data);
       toast.success('Welcome back to TaskFlow Enterprise!');
       navigate('/dashboard');
@@ -91,7 +95,6 @@ export const LoginPage = () => {
                 errors.email ? 'border-rose-500' : 'border-slate-600/70 hover:border-slate-500 focus:border-cyan-400'
               } text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400/50 transition-all`}
               {...register('email', { 
-                required: 'Email address is required',
                 pattern: { value: /^\S+@\S+$/i, message: 'Invalid email address' }
               })}
             />
@@ -113,7 +116,7 @@ export const LoginPage = () => {
               className={`w-full pl-10 pr-10 py-3 rounded-xl bg-[#0c1e46]/85 border ${
                 errors.password ? 'border-rose-500' : 'border-slate-600/70 hover:border-slate-500 focus:border-cyan-400'
               } text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400/50 transition-all`}
-              {...register('password', { required: 'Password is required' })}
+              {...register('password')}
             />
             <button
               type="button"
@@ -192,36 +195,12 @@ export const LoginPage = () => {
       </button>
 
       {/* Card Footer: Don't have an account? Create one */}
-      <p className="text-center text-xs text-slate-400 mt-5 font-normal">
+      <p className="text-center text-xs text-slate-400 mt-6 font-normal">
         Don't have an account?{' '}
         <Link to="/register" className="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">
           Create one
         </Link>
       </p>
-
-      {/* Quick Testing Bar (subtle 1-click credentials for demo testing) */}
-      <div className="mt-5 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
-        <span className="flex items-center gap-1 font-medium">
-          <Zap className="w-3 h-3 text-cyan-400" /> Demo Quick-Fill:
-        </span>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => handleQuickFill('admin@taskflow.com', 'TaskFlow#2026!Secure', 'Super Admin')}
-            className="text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer underline"
-          >
-            Super Admin
-          </button>
-          <span>·</span>
-          <button
-            type="button"
-            onClick={() => handleQuickFill('dev@taskflow.com', 'TaskFlow#2026!Secure', 'Developer')}
-            className="text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer underline"
-          >
-            Developer
-          </button>
-        </div>
-      </div>
 
     </div>
   );

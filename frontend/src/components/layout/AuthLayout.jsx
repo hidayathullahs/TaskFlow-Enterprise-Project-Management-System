@@ -122,13 +122,6 @@ export const AuthLayout = () => {
         </div>
       </main>
 
-      {/* ============================================================= */}
-      {/* 4. SUBTLE FOOTER                                              */}
-      {/* ============================================================= */}
-      <footer className="relative z-10 w-full px-6 sm:px-12 lg:px-16 py-4 text-xs text-slate-500 text-center lg:text-left">
-        <span>© {new Date().getFullYear()} TaskFlow Enterprise. All rights reserved.</span>
-      </footer>
-
     </div>
   );
 };
