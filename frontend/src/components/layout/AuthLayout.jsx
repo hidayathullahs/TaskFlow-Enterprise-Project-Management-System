@@ -11,13 +11,15 @@ export const AuthLayout = () => {
       {/* 1. BACKGROUND: PHOTOREALISTIC COSMIC EARTH & DATA NETWORK     */}
       {/* ============================================================= */}
       <div 
-        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none scale-105"
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none scale-105 filter brightness-125 contrast-105 saturate-115"
         style={{ backgroundImage: `url(${cosmicBg})` }}
       />
       
-      {/* Atmospheric dark gradient overlays for enhanced contrast & neon glow */}
-      <div className="fixed inset-0 z-0 bg-gradient-to-r from-[#030712]/95 via-[#030712]/60 to-[#030712]/80 pointer-events-none" />
-      <div className="fixed inset-0 z-0 bg-radial-[ellipse_at_70%_50%] from-cyan-500/15 via-transparent to-transparent pointer-events-none" />
+      {/* Atmospheric light layers with luminous electric blue glow for vibrant brightness */}
+      <div className="fixed inset-0 z-0 bg-gradient-to-r from-[#030712]/45 via-transparent to-[#030712]/30 pointer-events-none" />
+      <div className="fixed inset-0 z-0 bg-[radial-gradient(ellipse_at_65%_45%,rgba(0,180,255,0.32)_0%,transparent_65%)] pointer-events-none" />
+      <div className="fixed inset-0 z-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(0,229,255,0.25)_0%,transparent_50%)] pointer-events-none" />
+      <div className="fixed inset-0 z-0 bg-[radial-gradient(circle_at_85%_50%,rgba(0,150,255,0.22)_0%,transparent_50%)] pointer-events-none" />
 
       {/* ============================================================= */}
       {/* 2. TOP HEADER: LOGO BRANDING (MATCHING SCREENSHOT)            */}

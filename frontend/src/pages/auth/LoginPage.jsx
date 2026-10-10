@@ -48,7 +48,7 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="w-full rounded-[32px] p-8 sm:p-10 bg-[#071329]/85 backdrop-blur-2xl border border-cyan-400/80 shadow-[0_0_60px_rgba(0,180,255,0.35)] relative overflow-hidden text-slate-100 transition-all">
+    <div className="w-full rounded-[32px] p-8 sm:p-10 bg-[#081533]/85 backdrop-blur-2xl border-[1.5px] border-[#00d2ff] shadow-[0_0_60px_rgba(0,195,255,0.45),inset_0_0_30px_rgba(0,140,255,0.12)] relative overflow-hidden text-slate-100 transition-all">
       
       {/* Top Card Header matching screenshot */}
       <div className="flex flex-col items-center text-center gap-1.5 mb-6">
@@ -70,7 +70,7 @@ export const LoginPage = () => {
         <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
           Welcome <span className="text-cyan-400">back</span>
         </h2>
-        <p className="text-xs text-slate-400 mt-1.5 font-normal">
+        <p className="text-xs text-slate-300 mt-1.5 font-normal">
           Sign in to continue to your workspace
         </p>
       </div>
@@ -87,9 +87,9 @@ export const LoginPage = () => {
             <input
               type="email"
               placeholder="Email address"
-              className={`w-full pl-10 pr-4 py-3 rounded-xl bg-[#0b1836]/90 border ${
-                errors.email ? 'border-rose-500' : 'border-slate-700/80 focus:border-cyan-400'
-              } text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400/40 transition-all`}
+              className={`w-full pl-10 pr-4 py-3 rounded-xl bg-[#0c1e46]/85 border ${
+                errors.email ? 'border-rose-500' : 'border-slate-600/70 hover:border-slate-500 focus:border-cyan-400'
+              } text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400/50 transition-all`}
               {...register('email', { 
                 required: 'Email address is required',
                 pattern: { value: /^\S+@\S+$/i, message: 'Invalid email address' }
@@ -110,9 +110,9 @@ export const LoginPage = () => {
             <input
               type={showPassword ? 'text' : 'password'}
               placeholder="Password"
-              className={`w-full pl-10 pr-10 py-3 rounded-xl bg-[#0b1836]/90 border ${
-                errors.password ? 'border-rose-500' : 'border-slate-700/80 focus:border-cyan-400'
-              } text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400/40 transition-all`}
+              className={`w-full pl-10 pr-10 py-3 rounded-xl bg-[#0c1e46]/85 border ${
+                errors.password ? 'border-rose-500' : 'border-slate-600/70 hover:border-slate-500 focus:border-cyan-400'
+              } text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400/50 transition-all`}
               {...register('password', { required: 'Password is required' })}
             />
             <button
@@ -136,7 +136,7 @@ export const LoginPage = () => {
               type="checkbox"
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.target.checked)}
-              className="w-4 h-4 rounded bg-[#0b1836] border-slate-700 text-blue-600 focus:ring-0 focus:ring-offset-0 cursor-pointer accent-blue-600"
+              className="w-4 h-4 rounded bg-[#0b1836] border-slate-600 text-blue-600 focus:ring-0 focus:ring-offset-0 cursor-pointer accent-blue-600"
             />
             <span>Remember me</span>
           </label>
@@ -152,7 +152,7 @@ export const LoginPage = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3 rounded-xl bg-gradient-to-r from-[#00A3FF] to-[#00E5FF] hover:from-[#0092E5] hover:to-[#00D0E5] text-white font-bold text-sm shadow-[0_4px_25px_rgba(0,180,255,0.4)] hover:shadow-[0_4px_30px_rgba(0,180,255,0.6)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 mt-2"
+          className="w-full py-3 rounded-xl bg-gradient-to-r from-[#00A3FF] via-[#00C2FF] to-[#00F0FF] hover:from-[#0092E5] hover:to-[#00D0E5] text-white font-bold text-sm shadow-[0_4px_30px_rgba(0,195,255,0.55)] hover:shadow-[0_4px_35px_rgba(0,195,255,0.7)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 mt-2"
         >
           {loading ? (
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -169,7 +169,7 @@ export const LoginPage = () => {
       {/* OR Divider */}
       <div className="relative flex items-center justify-center my-5">
         <div className="border-t border-slate-700/80 w-full" />
-        <span className="bg-[#071329] px-3 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+        <span className="bg-[#081533] px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
           OR
         </span>
         <div className="border-t border-slate-700/80 w-full" />
@@ -179,7 +179,7 @@ export const LoginPage = () => {
       <button
         type="button"
         onClick={handleGoogleLogin}
-        className="w-full py-2.5 rounded-xl border border-slate-700/80 bg-[#0b1836]/60 hover:bg-[#0e2048] text-slate-200 text-xs font-semibold flex items-center justify-center gap-2.5 transition-all shadow-xs cursor-pointer"
+        className="w-full py-2.5 rounded-xl border border-slate-600/70 bg-[#0c1e46]/65 hover:bg-[#102452] text-slate-200 text-xs font-semibold flex items-center justify-center gap-2.5 transition-all shadow-xs cursor-pointer"
       >
         {/* Official Google multicolored G Logo */}
         <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
