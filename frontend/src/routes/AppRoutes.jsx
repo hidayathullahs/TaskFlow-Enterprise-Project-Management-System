@@ -4,6 +4,7 @@ import { ProtectedRoute } from './ProtectedRoute';
 import { AuthLayout } from '../components/layout/AuthLayout';
 import { DashboardLayout } from '../components/layout/DashboardLayout';
 
+import { HomePage } from '../pages/home/HomePage';
 import { LoginPage } from '../pages/auth/LoginPage';
 import { RegisterPage } from '../pages/auth/RegisterPage';
 import { ForgotPasswordPage } from '../pages/auth/ForgotPasswordPage';
@@ -36,6 +37,10 @@ import { UnauthorizedPage } from '../pages/unauthorized/UnauthorizedPage';
 export const AppRoutes = () => {
   return (
     <Routes>
+      {/* Public Marketing Landing & Homepage */}
+      <Route path="/" element={<HomePage />} />
+      <Route path="/home" element={<HomePage />} />
+
       {/* Public Auth Routes */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<LoginPage />} />
@@ -46,12 +51,10 @@ export const AppRoutes = () => {
         <Route path="/verify-otp" element={<VerifyOtpPage />} />
       </Route>
 
-      {/* Main Enterprise Protected Workspace: Root / and /dashboard */}
+      {/* Main Enterprise Protected Workspace: /dashboard */}
       <Route element={<ProtectedRoute />}>
         <Route element={<DashboardLayout />}>
-          <Route path="/" element={<DashboardPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/home" element={<DashboardPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/settings" element={<ProfilePage />} />
 

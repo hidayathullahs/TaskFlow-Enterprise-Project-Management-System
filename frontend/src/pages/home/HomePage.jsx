@@ -4,14 +4,14 @@ import {
   Sparkles, ShieldCheck, ArrowRight, Zap, Cpu, CheckSquare, 
   Users, BarChart3, Lock, CheckCircle2, ChevronRight, Globe, 
   Terminal, Server, Play, Star, Building2, Download, MousePointerClick,
-  Layers, Activity
+  Layers, Activity, Check, Target, Compass
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { APP_NAME } from '../../constants';
 import { Button } from '../../components/common/Button';
 
 // High-tech AI background artwork & showcase visual assets
-import motionHeroBg from '../../assets/enterprise_motion_hero_bg.jpg';
+import cosmicGlobeBg from '../../assets/homepage_cosmic_globe_bg.jpg';
 import motionGridBg from '../../assets/enterprise_motion_grid_bg.jpg';
 import heroShowcaseImg from '../../assets/auth_hero_illustration.jpg';
 import aiBannerImg from '../../assets/ai_intelligence_banner.jpg';
@@ -98,9 +98,9 @@ export const HomePage = () => {
       image: teamImg,
       badge: 'Zero-Trust RBAC',
       metrics: [
-        { label: 'Active Roles', value: '6 Tiers' },
-        { label: 'RBAC Enforcement', value: 'Method-Level' },
-        { label: 'Directory Search', value: '<12ms Latency' },
+        { label: 'Security Standard', value: 'SOC2 Type II' },
+        { label: 'Active Personnel', value: '25,000+' },
+        { label: 'Hierarchy Depth', value: 'N-Tier' },
       ]
     }
   ];
@@ -108,94 +108,87 @@ export const HomePage = () => {
   const currentTab = productTabs.find(t => t.id === activeTab) || productTabs[0];
 
   return (
-    <div className="min-h-screen bg-[#05070d] text-slate-100 selection:bg-brand-500 selection:text-white overflow-x-hidden font-sans relative">
+    <div className="min-h-screen bg-[#030611] text-slate-100 selection:bg-cyan-500 selection:text-white overflow-x-hidden font-sans relative">
       
       {/* ========================================================================= */}
-      {/* 🚀 TOP SCROLL PROGRESS INDICATOR (LINEAR / VERCEL STYLE) */}
+      {/* 🚀 TOP SCROLL PROGRESS INDICATOR                                          */}
       {/* ========================================================================= */}
       <div 
-        className="fixed top-0 left-0 right-0 h-[3px] z-[100] bg-gradient-to-r from-cyan-400 via-brand-500 to-purple-500 transition-all duration-75 shadow-[0_0_14px_rgba(59,130,246,0.9)]"
+        className="fixed top-0 left-0 right-0 h-[3px] z-[100] bg-gradient-to-r from-[#00A3FF] via-[#00E5FF] to-purple-500 transition-all duration-75 shadow-[0_0_14px_rgba(0,180,255,0.9)]"
         style={{ width: `${scrollPercent}%` }}
       />
 
       {/* ========================================================================= */}
-      {/* 🌌 MULTI-LAYER GLOBAL PARALLAX SCROLL MOTION BACKGROUND */}
+      {/* 🌌 MULTI-LAYER GLOBAL PARALLAX SCROLL MOTION BACKGROUND                   */}
       {/* ========================================================================= */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden select-none">
         
-        {/* Layer 1: Futuristic Perspective Cyber Lattice (Glides smoothly with scroll) */}
+        {/* Layer 1: Photorealistic Cosmic Globe Wallpaper (User's Exact Asset) */}
         <div 
-          className="absolute -top-24 -left-12 -right-12 h-[150vh] bg-cover bg-center transition-transform duration-75 ease-out will-change-transform"
+          className="absolute -top-16 -left-12 -right-12 h-[140vh] bg-cover bg-center transition-transform duration-75 ease-out will-change-transform filter brightness-115 contrast-105"
           style={{
-            backgroundImage: `url(${motionHeroBg})`,
-            transform: `translate3d(0, ${-scrollY * 0.18}px, 0) scale(1.06)`,
-            opacity: Math.max(0.65 - scrollY * 0.0003, 0.25)
+            backgroundImage: `url(${cosmicGlobeBg})`,
+            transform: `translate3d(0, ${-scrollY * 0.16}px, 0) scale(1.05)`,
+            opacity: Math.max(0.75 - scrollY * 0.0003, 0.35)
           }}
         />
 
-        {/* Layer 2: Cybernetic Matrix Grid with subtle counter-parallax drift */}
+        {/* Layer 2: Subtle Cybernetic Constellation Grid with Parallax Drift */}
         <div 
-          className="absolute inset-0 opacity-25 will-change-transform"
+          className="absolute inset-0 opacity-20 will-change-transform"
           style={{
             backgroundImage: `
-              linear-gradient(to right, rgba(59, 130, 246, 0.25) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(59, 130, 246, 0.25) 1px, transparent 1px)
+              linear-gradient(to right, rgba(0, 163, 255, 0.25) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(0, 163, 255, 0.25) 1px, transparent 1px)
             `,
-            backgroundSize: '4rem 4rem',
-            transform: `translate3d(0, ${-scrollY * 0.08}px, 0)`
+            backgroundSize: '4.5rem 4.5rem',
+            transform: `translate3d(0, ${-scrollY * 0.06}px, 0)`
           }}
         />
 
-        {/* Layer 3: Radiant Floating Cosmic Orbs that respond dynamically to scroll */}
-        {/* Orb A: Top Cyan Nebula Glow */}
+        {/* Layer 3: Radiant Cosmic Ambient Light Glows */}
         <div 
-          className="absolute -top-32 left-1/4 w-[750px] h-[750px] rounded-full bg-cyan-500/25 blur-[180px] will-change-transform"
+          className="absolute -top-32 left-1/4 w-[800px] h-[800px] rounded-full bg-cyan-500/20 blur-[180px] will-change-transform"
           style={{
-            transform: `translate3d(${Math.sin(scrollY * 0.0016) * 70}px, ${-scrollY * 0.22}px, 0)`
+            transform: `translate3d(${Math.sin(scrollY * 0.0016) * 60}px, ${-scrollY * 0.2}px, 0)`
           }}
         />
-        {/* Orb B: Mid-page Luminous Violet Core */}
         <div 
-          className="absolute top-1/3 right-[-80px] w-[700px] h-[700px] rounded-full bg-purple-600/30 blur-[190px] will-change-transform"
+          className="absolute top-1/3 right-[-60px] w-[700px] h-[700px] rounded-full bg-blue-600/25 blur-[190px] will-change-transform"
           style={{
-            transform: `translate3d(${Math.cos(scrollY * 0.0019) * -60}px, ${-scrollY * 0.28}px, 0)`
-          }}
-        />
-        {/* Orb C: Lower Electric Blue Spotlight */}
-        <div 
-          className="absolute top-2/3 left-[-100px] w-[650px] h-[650px] rounded-full bg-blue-600/25 blur-[170px] will-change-transform"
-          style={{
-            transform: `translate3d(0, ${-scrollY * 0.16}px, 0)`
+            transform: `translate3d(${Math.cos(scrollY * 0.0019) * -50}px, ${-scrollY * 0.25}px, 0)`
           }}
         />
 
-        {/* Layer 4: Subtle Dark Glass Vignette ensuring pristine contrast & 100% typography legibility */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#05070d]/50 via-[#05070d]/75 to-[#05070d]/90 pointer-events-none" />
+        {/* Layer 4: Vignette Gradient for Perfect Contrast */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#030611]/35 via-[#030611]/70 to-[#030611]/95 pointer-events-none" />
       </div>
 
       {/* ========================================================================= */}
-      {/* 1. TOP ENTERPRISE STICKY NAVIGATION BAR */}
+      {/* 1. TOP ENTERPRISE STICKY NAVIGATION BAR (MATCHING TASKFLOW BRAND)        */}
       {/* ========================================================================= */}
-      <header className="sticky top-0 z-50 w-full border-b border-slate-800/80 bg-[#05070d]/80 backdrop-blur-2xl transition-all">
+      <header className="sticky top-0 z-50 w-full border-b border-slate-800/80 bg-[#030611]/85 backdrop-blur-2xl transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
-          {/* Logo & Brand */}
+          {/* Logo & Brand matching reference */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-brand-600 via-indigo-600 to-purple-600 font-black text-white text-xl shadow-lg shadow-brand-500/30 border border-white/20 group-hover:scale-105 transition-transform">
-              TF
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-600/40 group-hover:scale-105 transition-transform">
+              <Check className="w-6 h-6 stroke-[3]" />
             </div>
             <div>
-              <span className="text-xl font-black tracking-tight text-white flex items-center gap-1.5">
-                {APP_NAME} <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">Enterprise</span>
+              <span className="text-xl font-extrabold tracking-tight text-white block leading-tight">
+                TaskFlow
               </span>
-              <p className="text-[10px] text-slate-400 font-medium tracking-wide">Autonomous Project Cloud</p>
+              <span className="text-[9px] font-bold tracking-[0.22em] uppercase text-cyan-400 block mt-0.5">
+                PROJECT MANAGEMENT PLATFORM
+              </span>
             </div>
           </Link>
 
           {/* Center Navigation Links */}
           <nav className="hidden md:flex items-center gap-8 text-xs font-bold text-slate-300">
-            <a href="#features" className="hover:text-cyan-400 transition-colors">Features</a>
             <a href="#showcase" className="hover:text-cyan-400 transition-colors">Platform Modules</a>
+            <a href="#features" className="hover:text-cyan-400 transition-colors">Capabilities</a>
             <a href="#security" className="hover:text-cyan-400 transition-colors">Enterprise Security</a>
             <a href="#metrics" className="hover:text-cyan-400 transition-colors">Telemetry</a>
           </nav>
@@ -205,9 +198,9 @@ export const HomePage = () => {
             {isAuthenticated ? (
               <Button 
                 onClick={() => navigate('/dashboard')}
-                className="bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold shadow-lg shadow-brand-500/30 h-10 px-5 text-xs"
+                className="bg-gradient-to-r from-[#00A3FF] to-[#00E5FF] hover:from-[#0092E5] hover:to-[#00D0E5] text-white font-bold shadow-lg shadow-cyan-500/30 h-10 px-5 text-xs rounded-xl"
               >
-                Go to Dashboard <ArrowRight className="w-4 h-4 ml-1.5" />
+                Go to Workspace <ArrowRight className="w-4 h-4 ml-1.5" />
               </Button>
             ) : (
               <>
@@ -219,9 +212,9 @@ export const HomePage = () => {
                 </Link>
                 <Link 
                   to="/login"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 via-brand-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white text-xs font-bold shadow-lg shadow-brand-500/30 hover:scale-102 transition-all"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#00A3FF] to-[#00E5FF] hover:from-[#0092E5] hover:to-[#00D0E5] text-white text-xs font-bold shadow-lg shadow-cyan-500/30 hover:scale-102 transition-all cursor-pointer"
                 >
-                  <span>Launch Live Demo</span>
+                  <span>Launch Workspace</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </>
@@ -231,13 +224,13 @@ export const HomePage = () => {
       </header>
 
       {/* ========================================================================= */}
-      {/* 2. HERO SECTION WITH PARALLAX MOTION ELEVATION & 3D FLOATING BADGES */}
+      {/* 2. HERO SECTION WITH PARALLAX MOTION & COSMIC GLOBE ELEVATION            */}
       {/* ========================================================================= */}
       <section className="relative pt-12 pb-20 lg:pt-20 lg:pb-32 overflow-hidden z-10">
         
         {/* Floating 3D Depth Card 1 (Top Left) */}
         <div 
-          className="hidden xl:flex absolute top-32 left-10 items-center gap-3.5 p-4 rounded-2xl bg-slate-900/85 backdrop-blur-xl border border-cyan-500/30 shadow-[0_10px_30px_rgba(6,182,212,0.15)] text-xs z-20 pointer-events-none transition-transform duration-75 will-change-transform"
+          className="hidden xl:flex absolute top-32 left-10 items-center gap-3.5 p-4 rounded-2xl bg-slate-900/85 backdrop-blur-xl border border-cyan-500/30 shadow-[0_10px_30px_rgba(0,180,255,0.2)] text-xs z-20 pointer-events-none transition-transform duration-75 will-change-transform"
           style={{
             transform: `translate3d(${Math.sin(scrollY * 0.002) * 20}px, ${-scrollY * 0.35}px, 0)`
           }}
@@ -246,23 +239,23 @@ export const HomePage = () => {
             <Zap className="w-5 h-5" />
           </div>
           <div>
-            <div className="font-black text-white text-sm">18ms API Latency</div>
+            <div className="font-extrabold text-white text-sm">18ms API Latency</div>
             <div className="text-[11px] text-slate-400 font-medium">Real-Time WebSocket Sync</div>
           </div>
         </div>
 
         {/* Floating 3D Depth Card 2 (Top Right) */}
         <div 
-          className="hidden xl:flex absolute top-36 right-10 items-center gap-3.5 p-4 rounded-2xl bg-slate-900/85 backdrop-blur-xl border border-purple-500/30 shadow-[0_10px_30px_rgba(168,85,247,0.15)] text-xs z-20 pointer-events-none transition-transform duration-75 will-change-transform"
+          className="hidden xl:flex absolute top-36 right-10 items-center gap-3.5 p-4 rounded-2xl bg-slate-900/85 backdrop-blur-xl border border-blue-500/30 shadow-[0_10px_30px_rgba(0,140,255,0.2)] text-xs z-20 pointer-events-none transition-transform duration-75 will-change-transform"
           style={{
             transform: `translate3d(${Math.cos(scrollY * 0.002) * -20}px, ${-scrollY * 0.45}px, 0)`
           }}
         >
-          <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 shadow-inner">
+          <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 shadow-inner">
             <Cpu className="w-5 h-5" />
           </div>
           <div>
-            <div className="font-black text-white text-sm">96.2% AI Forecast</div>
+            <div className="font-extrabold text-white text-sm">96.2% AI Forecast</div>
             <div className="text-[11px] text-slate-400 font-medium">Neural Predictive Delivery</div>
           </div>
         </div>
@@ -277,38 +270,79 @@ export const HomePage = () => {
           </div>
 
           {/* Main Hero Headline */}
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight max-w-5xl mx-auto leading-[1.1] drop-shadow-lg">
-            Next-Generation Project Intelligence for{' '}
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight max-w-5xl mx-auto leading-[1.1] drop-shadow-xl">
+            Global Project Intelligence for{' '}
+            <span className="bg-gradient-to-r from-[#00A3FF] via-[#00E5FF] to-purple-400 bg-clip-text text-transparent">
               High-Velocity Teams
             </span>.
           </h1>
 
           {/* Subtitle */}
           <p className="text-base sm:text-lg text-slate-300 max-w-3xl mx-auto font-normal leading-relaxed drop-shadow-md">
-            Eliminate operational silos with real-time Kanban task orchestration, machine learning delivery forecasting, automated OpenPDF & Excel reporting, and SOC2-compliant role governance.
+            Eliminate operational silos with real-time Kanban task orchestration, machine learning delivery forecasting, automated OpenPDF & Excel reporting, and SOC2-compliant role governance across 140+ countries.
           </p>
 
           {/* Call to Actions */}
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
             <Link 
               to="/login"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-600 via-brand-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-extrabold text-sm shadow-xl shadow-brand-500/40 hover:scale-105 transition-all"
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#00A3FF] to-[#00E5FF] hover:from-[#0092E5] hover:to-[#00D0E5] text-white font-extrabold text-sm shadow-xl shadow-cyan-500/40 hover:scale-105 transition-all cursor-pointer"
             >
-              <span>Explore Interactive Sandbox</span>
+              <span>Explore Workspace Sandbox</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
             <a 
               href="#showcase"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-slate-200 font-bold text-sm backdrop-blur-md hover:scale-102 transition-all shadow-lg"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-slate-200 font-bold text-sm backdrop-blur-md hover:scale-102 transition-all shadow-lg cursor-pointer"
             >
               <Play className="w-4 h-4 text-cyan-400" />
-              <span>Watch Platform Tour</span>
+              <span>Watch Interactive Tour</span>
             </a>
           </div>
 
+          {/* 4 Circular Feature Badges matching reference aesthetic */}
+          <div className="pt-8 flex items-center justify-center gap-6 sm:gap-12 flex-wrap">
+            
+            <div className="flex flex-col items-center text-center gap-2 group">
+              <div className="w-12 h-12 rounded-full bg-[#0a152e]/90 border border-cyan-500/35 flex items-center justify-center text-cyan-400 shadow-[0_0_20px_rgba(0,180,255,0.25)] group-hover:scale-110 transition-transform">
+                <Users className="w-5 h-5 stroke-[2]" />
+              </div>
+              <span className="text-xs font-semibold text-slate-300 leading-tight">
+                Work<br />Together
+              </span>
+            </div>
+
+            <div className="flex flex-col items-center text-center gap-2 group">
+              <div className="w-12 h-12 rounded-full bg-[#0a152e]/90 border border-cyan-500/35 flex items-center justify-center text-cyan-400 shadow-[0_0_20px_rgba(0,180,255,0.25)] group-hover:scale-110 transition-transform">
+                <Target className="w-5 h-5 stroke-[2]" />
+              </div>
+              <span className="text-xs font-semibold text-slate-300 leading-tight">
+                Stay<br />Organized
+              </span>
+            </div>
+
+            <div className="flex flex-col items-center text-center gap-2 group">
+              <div className="w-12 h-12 rounded-full bg-[#0a152e]/90 border border-cyan-500/35 flex items-center justify-center text-cyan-400 shadow-[0_0_20px_rgba(0,180,255,0.25)] group-hover:scale-110 transition-transform">
+                <BarChart3 className="w-5 h-5 stroke-[2]" />
+              </div>
+              <span className="text-xs font-semibold text-slate-300 leading-tight">
+                Track<br />Progress
+              </span>
+            </div>
+
+            <div className="flex flex-col items-center text-center gap-2 group">
+              <div className="w-12 h-12 rounded-full bg-[#0a152e]/90 border border-cyan-500/35 flex items-center justify-center text-cyan-400 shadow-[0_0_20px_rgba(0,180,255,0.25)] group-hover:scale-110 transition-transform">
+                <Sparkles className="w-5 h-5 stroke-[2]" />
+              </div>
+              <span className="text-xs font-semibold text-slate-300 leading-tight">
+                Achieve<br />More
+              </span>
+            </div>
+
+          </div>
+
           {/* Live Trust Metrics Ribbon */}
-          <div className="pt-8 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs font-semibold text-slate-300">
+          <div className="pt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-xs font-semibold text-slate-300">
             <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900/70 border border-slate-800 backdrop-blur-md shadow-md">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span>SOC2 Type II Certified</span>
@@ -327,12 +361,12 @@ export const HomePage = () => {
             </div>
           </div>
 
-          {/* 3D Hero Visual Preview Showcase with Scroll Motion Perspective Depth */}
+          {/* 3D Hero Visual Preview Showcase */}
           <div 
-            className="mt-14 relative rounded-3xl overflow-hidden border border-slate-700/80 shadow-[0_20px_70px_rgba(30,58,138,0.35)] max-w-5xl mx-auto group bg-slate-950/80 backdrop-blur-xl transition-all duration-300 will-change-transform"
+            className="mt-14 relative rounded-3xl overflow-hidden border border-slate-700/80 shadow-[0_20px_70px_rgba(0,163,255,0.3)] max-w-5xl mx-auto group bg-slate-950/80 backdrop-blur-xl transition-all duration-300 will-change-transform"
             style={{
               transform: `perspective(1200px) rotateX(${Math.min(scrollY * 0.02, 6)}deg) translateY(${scrollY * -0.06}px)`,
-              boxShadow: `0 ${20 + Math.min(scrollY * 0.05, 40)}px ${60 + Math.min(scrollY * 0.1, 80)}px rgba(59, 130, 246, 0.25)`
+              boxShadow: `0 ${20 + Math.min(scrollY * 0.05, 40)}px ${60 + Math.min(scrollY * 0.1, 80)}px rgba(0, 163, 255, 0.25)`
             }}
           >
             <img 
@@ -370,11 +404,10 @@ export const HomePage = () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 3. INTERACTIVE PLATFORM MODULE SHOWCASE WITH ATMOSPHERIC GRID PARALLAX */}
+      {/* 3. INTERACTIVE PLATFORM MODULE SHOWCASE                                  */}
       {/* ========================================================================= */}
       <section id="showcase" className="py-24 border-t border-slate-800/80 relative z-10 overflow-hidden">
         
-        {/* Dedicated Section Parallax Background: Cybernetic Quantum City Grid */}
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-30 pointer-events-none transition-transform duration-75 ease-out will-change-transform"
           style={{
@@ -382,7 +415,7 @@ export const HomePage = () => {
             transform: `translate3d(0, ${(scrollY - 1000) * -0.15}px, 0) scale(1.08)`
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#05070d] via-[#05070d]/80 to-[#05070d] pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#030611] via-[#030611]/80 to-[#030611] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
           
@@ -404,9 +437,9 @@ export const HomePage = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 whitespace-nowrap transition-all ${
+                  className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 whitespace-nowrap transition-all cursor-pointer ${
                     activeTab === tab.id
-                      ? 'bg-gradient-to-r from-cyan-600 via-brand-600 to-indigo-600 text-white shadow-lg shadow-brand-600/30 font-black'
+                      ? 'bg-gradient-to-r from-[#00A3FF] to-[#00E5FF] text-white shadow-lg shadow-cyan-500/30 font-black'
                       : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
                   }`}
                 >
@@ -445,7 +478,7 @@ export const HomePage = () => {
               <div className="pt-2">
                 <Link
                   to="/login"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-brand-600 hover:from-cyan-500 hover:to-brand-500 text-white text-xs font-bold shadow-md shadow-brand-500/30 transition-all hover:scale-102"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#00A3FF] to-[#00E5FF] hover:from-[#0092E5] hover:to-[#00D0E5] text-white text-xs font-bold shadow-md shadow-cyan-500/30 transition-all hover:scale-102 cursor-pointer"
                 >
                   <span>Launch {currentTab.label}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -466,7 +499,7 @@ export const HomePage = () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 4. CORE FEATURES GRID WITH GLOWING HOVER INTERACTIONS & AMBIENT PARALLAX */}
+      {/* 4. CORE FEATURES GRID                                                    */}
       {/* ========================================================================= */}
       <section id="features" className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
         
@@ -487,7 +520,7 @@ export const HomePage = () => {
             </div>
             <h4 className="text-lg font-black text-white">Kanban Velocity Board</h4>
             <p className="text-xs text-slate-300 leading-relaxed">
-              Interactive 4-stage Kanban columns (To Do, In Progress, Review, Completed) with task number tracking and inline stage transitions.
+              Interactive 4-stage Kanban columns (Upcoming, In Progress, In Review, Completed) with task number tracking and inline stage transitions.
             </p>
           </div>
 
@@ -544,11 +577,10 @@ export const HomePage = () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 5. BOTTOM CALL TO ACTION WITH CYBER GRID HORIZON & GLOW MESH */}
+      {/* 5. BOTTOM CALL TO ACTION                                                  */}
       {/* ========================================================================= */}
       <section className="py-24 border-t border-slate-800/80 relative z-10 overflow-hidden">
         
-        {/* Parallax Background for CTA */}
         <div 
           className="absolute inset-0 bg-cover bg-bottom opacity-35 pointer-events-none transition-transform duration-75 will-change-transform"
           style={{
@@ -556,7 +588,7 @@ export const HomePage = () => {
             transform: `translate3d(0, ${(scrollY - 2600) * -0.12}px, 0) scale(1.08)`
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#05070d] via-[#05070d]/80 to-[#05070d] pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#030611] via-[#030611]/80 to-[#030611] pointer-events-none" />
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
@@ -572,7 +604,7 @@ export const HomePage = () => {
           <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
             <Link
               to="/login"
-              className="px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-600 via-brand-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-black text-sm shadow-xl shadow-brand-500/30 hover:scale-105 transition-all"
+              className="px-8 py-4 rounded-2xl bg-gradient-to-r from-[#00A3FF] to-[#00E5FF] hover:from-[#0092E5] hover:to-[#00D0E5] text-white font-black text-sm shadow-xl shadow-cyan-500/40 hover:scale-105 transition-all cursor-pointer"
             >
               Sign In to TaskFlow Enterprise <ArrowRight className="w-4 h-4 inline-block ml-1.5" />
             </Link>
@@ -581,15 +613,18 @@ export const HomePage = () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 6. ENTERPRISE FOOTER */}
+      {/* 6. ENTERPRISE FOOTER                                                     */}
       {/* ========================================================================= */}
-      <footer className="border-t border-slate-800/80 bg-[#030509] py-12 text-slate-400 text-xs relative z-10">
+      <footer className="border-t border-slate-800/80 bg-[#02040a] py-12 text-slate-400 text-xs relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-cyan-600 to-brand-600 font-bold text-white text-xs">
-              TF
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-600 text-white font-bold text-xs shadow-md">
+              <Check className="w-5 h-5 stroke-[3]" />
             </div>
-            <span>© {new Date().getFullYear()} {APP_NAME} Enterprise SaaS Inc. All rights reserved.</span>
+            <div>
+              <span className="font-extrabold text-white text-sm">TaskFlow</span>
+              <span className="text-[10px] text-slate-500 block">© {new Date().getFullYear()} Enterprise SaaS Inc. All rights reserved.</span>
+            </div>
           </div>
           <div className="flex items-center gap-6 font-medium">
             <span className="flex items-center gap-1.5 text-slate-300">
